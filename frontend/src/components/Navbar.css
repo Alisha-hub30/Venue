@@ -1,69 +1,89 @@
-
-.navbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: #fc0606;
-    padding: 10px 20px;
+header{
+    height: 10rem;
+    box-shadow: rgba(33 ,35, 38, 0.1) 0px 10px 10px -10px;
+    background-color: #FFB7C5;
+    width: 100%;
     position: fixed;
     top: 0;
-    width: 100%;
-    z-index: 1000; /* Ensures the navbar stays on top of other content */
 }
 
-.navbar-logo .logo {
-    color: #fff;
-    font-size: 24px;
-    font-weight: bold;
-    text-decoration: none;
+li{
+    list-style: none;
 }
 
-.navbar-list {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
+a{
+    color: rgb(14, 13, 13);
+    &:hover{
+        color: #c76a7c;
+        text-decoration: underline;
+    }
+}
+
+button{
+    cursor: pointer;
+}
+
+.container{
+    max-width: 132rem;
+    margin: auto;
+    height: 10rem;
+}
+
+.logo{
+    color: black;
+}
+
+.grid{
+    display: grid;
+}
+
+.navbar-grid{
+    grid-template-columns: .5fr 1fr;
+    align-items: center;
+    height: 10rem;
+    padding: 0 3.2rem;
+}
+
+nav ul{
     display: flex;
-    padding: 10px 20px;
+    justify-content: flex-end;
+    gap: 5rem;
 }
 
-.navbar-item {
-    margin-left: 20px;
+.ham-menu{
+    display: none;
 }
 
-.navbar-link {
-    color: white;
-    text-decoration: none;
-    font-size: 18px;
-    font-weight: 500;
-    padding: 8px 16px;
-    border-radius: 4px;
-}
-
-.navbar-link:hover {
-    text-decoration: underline; /* Add underline on hover */
-    text-decoration-thickness: 3px;
-    background-color: transparent; /* Optional: background color change */
-    color: #f2f1ed; /* Optional: text color change on hover */
-}
-
-  /* Optional: Add a responsive media query */
-@media (max-width: 768px) {
-    .navbar {
-        flex-direction: column;
-        align-items: flex-start;
+/* media queries */
+@media screen and (max-width:998px) {
+    .menu-web{
+        display: none;
+    }
+    .ham-menu{
+        display: inline-block;
+        text-align: end;
     }
 
-    .navbar-list {
+    .menu-mobile{
+        position: absolute;
+        top: 10rem;
+        left: 0;
+        background-color: #ffffff;
         width: 100%;
-        text-align: left;
+        box-shadow: rgba(0, 0, 0, 0.25) 0px 14px 28px;
     }
 
-    .navbar-item {
-        margin: 5px 0;
-    }
-}
+    .menu-mobile ul {
+        display: flex;
+        flex-direction: column;
 
-  /* Add padding to the body to prevent content from hiding under the navbar */
-body {
-    padding-top: 60px; /* Adjust this value based on the height of your navbar */
+        & li:first-child{
+            margin-top: 1.2rem;
+        }
+
+        & li:last-child{
+            margin-bottom: 1.2rem;
+        }
+    }
+    
 }
