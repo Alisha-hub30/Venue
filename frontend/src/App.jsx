@@ -1,10 +1,12 @@
 import "./App.css";
+import Login from './components/Login';
 import Navbar from './components/Navbar';
 
 const App = () => {
   return (
     <div>
       <Navbar />
+      <Login />
       <div>
         <h1>Welcome to My Website</h1>
         <p>Scroll down to see the content.</p>
