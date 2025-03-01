@@ -1,12 +1,12 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import userModel from "../models/userModel";
+import userModel from "../models/userModel.js";
 
 export const register = async (req, res) => {
   const { name, email, password } = req.body;
 
   if (!name || !email || !password) {
-    return res.json({ sucess: false, message: "Missing Details" });
+    return res.json({ success: false, message: "Missing Details" });
   }
 
   try {
@@ -29,10 +29,10 @@ export const register = async (req, res) => {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: process.env.NODE_ENV == "production" ? "none" : "strict",
-      maxAe: 7 * 24 * 60 * 60 * 1000,
+      maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
-    return res.json({ sucess: true });
+    return res.json({ success: true });
   } catch (error) {
     res.json({ success: false, message: error.message });
   }
@@ -71,13 +71,13 @@ export const login = async (req, res) => {
       maxAe: 7 * 24 * 60 * 60 * 1000,
     });
 
-    return res.json({ sucess: true });
+    return res.json({ success: true });
   } catch (error) {
     return res.json({ success: false, message: error.message });
   }
 };
 
-export const logout = async () => {
+export const logout = async (req, res) => {
   try {
     res.clearCookie("token", {
       httpOnly: true,
