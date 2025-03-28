@@ -1,19 +1,22 @@
-import "./App.css";
-import Login from './components/Login';
+import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
+import './App.css';
+import About from './components/About';
+import Home from './components/Home';
 import Navbar from './components/Navbar';
-
-const App = () => {
+function App() {
   return (
-    <div>
-      <Navbar />
-      <Login />
-      <div>
-        <h1>Welcome to My Website</h1>
-        <p>Scroll down to see the content.</p>
-        {/* Your other components or content goes here */}
+    <Router>
+      <div className="app">
+        <Navbar />
+        <main>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/about" element={<About />} />
+          </Routes>
+        </main>
       </div>
-    </div>
+    </Router>
   );
-};
+}
 
 export default App;

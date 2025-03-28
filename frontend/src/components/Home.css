@@ -1,0 +1,145 @@
+/* Home Page Container */
+.home-page {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  background-color: #f3f4f6;
+  margin-top: 6rem;
+  padding-bottom: 3rem;
+}
+
+/* Header Section */
+.header-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 72rem;
+  margin: 0 auto;
+  gap: 1.5rem;
+  padding: 0 2rem;
+}
+
+@media (min-width: 768px) {
+  .header-section {
+    flex-direction: row;
+    align-items: flex-start;
+    padding: 0 4rem;
+  }
+}
+
+/* Heading Sections */
+.heading-left {
+  width: 100%;
+}
+
+.heading-left h1 {
+  font-size: 1.875rem;
+  line-height: 2.25rem;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.heading-left .accent-text {
+  color: #6D0C0E;
+}
+
+.description-right {
+  width: 100%;
+}
+
+.description-right p {
+  color: #4b5563;
+  line-height: 1.6;
+}
+
+@media (min-width: 768px) {
+  .heading-left {
+    width: 50%;
+  }
+  
+  .heading-left h1 {
+    font-size: 2.25rem;
+    line-height: 2.5rem;
+  }
+  
+  .description-right {
+    width: 50%;
+    padding-top: 0.5rem;
+  }
+}
+
+/* Services Section */
+.services-section {
+  display: grid;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+  gap: 1.5rem;
+  padding: 3rem 2rem;
+  max-width: 72rem;
+  margin: 0 auto;
+  transition: opacity 1000ms ease;
+}
+
+.services-section.visible {
+  opacity: 1;
+}
+
+.services-section.hidden {
+  opacity: 0;
+}
+
+@media (min-width: 768px) {
+  .services-section {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    padding: 3rem 4rem;
+  }
+}
+
+/* Service Card */
+.service-card {
+  display: flex;
+  overflow: hidden;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  position: relative;
+  color: white;
+  min-height: 180px;
+}
+
+.text-section {
+  padding: 1.5rem;
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  z-index: 2;
+}
+
+.text-section h2 {
+  font-size: 1.5rem;
+  line-height: 2rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.text-section p {
+  font-size: 0.875rem;
+  opacity: 0.9;
+}
+
+.image-section {
+  width: 50%;
+  position: relative;
+}
+
+.image-section img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Background Colors */
+.bg-olive { background-color: #556B2F; }
+.bg-maroon { background-color: #800000; }
+.bg-navy { background-color: #1E3A8A; }
+.bg-blue { background-color: #1E40AF; }
