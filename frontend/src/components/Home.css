@@ -1,145 +1,215 @@
-/* Home Page Container */
-.home-page {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  background-color: #f3f4f6;
-  margin-top: 6rem;
-  padding-bottom: 3rem;
-}
-
-/* Header Section */
-.header-section {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-between;
-  max-width: 72rem;
+/* General styles */
+.container {
+  max-width: 1200px;
   margin: 0 auto;
-  gap: 1.5rem;
-  padding: 0 2rem;
+  padding: 0 20px;
 }
 
-@media (min-width: 768px) {
-  .header-section {
-    flex-direction: row;
-    align-items: flex-start;
-    padding: 0 4rem;
-  }
+.section-title {
+  text-align: center;
+  margin-bottom: 40px;
+  font-size: 2.5rem;
 }
 
-/* Heading Sections */
-.heading-left {
-  width: 100%;
+/* About Section */
+.about-section {
+  padding: 80px 0;
+  background-color: #f9f9f9;
 }
 
-.heading-left h1 {
-  font-size: 1.875rem;
-  line-height: 2.25rem;
-  font-weight: 600;
-  color: #1f2937;
-}
-
-.heading-left .accent-text {
-  color: #6D0C0E;
-}
-
-.description-right {
-  width: 100%;
-}
-
-.description-right p {
-  color: #4b5563;
+.about-content {
+  max-width: 800px;
+  margin: 0 auto;
   line-height: 1.6;
+  font-size: 1.1rem;
 }
 
-@media (min-width: 768px) {
-  .heading-left {
-    width: 50%;
-  }
-  
-  .heading-left h1 {
-    font-size: 2.25rem;
-    line-height: 2.5rem;
-  }
-  
-  .description-right {
-    width: 50%;
-    padding-top: 0.5rem;
-  }
+.about-content p {
+  margin-bottom: 20px;
 }
 
+/* About Button */
+.about-btn-container {
+  text-align: center;
+  margin-top: 2rem;
+}
+
+.about-btn {
+  display: inline-block;
+  background-color: #6D0C0E;
+  color: white;
+  padding: 0.8rem 2rem;
+  border-radius: 50px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  box-shadow: 0 4px 8px rgba(109, 12, 14, 0.2);
+}
+
+.about-btn:hover {
+  background-color: #5a0a0c;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(109, 12, 14, 0.3);
+}
 /* Services Section */
 .services-section {
+  padding: 80px 0;
+}
+
+.services-header {
+  text-align: center;
+  margin-bottom: 50px;
+}
+
+.services-title {
+  font-size: 2rem;
+  margin-bottom: 20px;
+}
+
+.services-grid {
   display: grid;
-  grid-template-columns: repeat(1, minmax(0, 1fr));
-  gap: 1.5rem;
-  padding: 3rem 2rem;
-  max-width: 72rem;
-  margin: 0 auto;
-  transition: opacity 1000ms ease;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 30px;
 }
 
-.services-section.visible {
-  opacity: 1;
-}
-
-.services-section.hidden {
-  opacity: 0;
-}
-
-@media (min-width: 768px) {
-  .services-section {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    padding: 3rem 4rem;
-  }
-}
-
-/* Service Card */
 .service-card {
-  display: flex;
-  overflow: hidden;
-  border-radius: 0.5rem;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  position: relative;
+  padding: 25px;
+  border: 1px solid #eee;
+  border-radius: 5px;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.service-card:hover {
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  transform: translateY(-5px);
+}
+
+.service-card h4 {
+  font-size: 1.2rem;
+  margin-bottom: 15px;
+}
+
+.service-card p {
+  margin-bottom: 20px;
+  color: #666;
+}
+
+.read-more {
+  background-color: #f9d03b;
+  color: #333;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+.read-more:hover {
+  background-color: #e7c234;
+}
+
+/* Gallery Section */
+.gallery-section {
+  padding: 6rem 2rem;
+  background-color: #c58a45; /* Brown background color like in the image */
+  background-image: url('/path-to-subtle-texture.jpg'); /* Optional: Add a subtle texture */
+}
+
+.gallery-section .section-title {
   color: white;
-  min-height: 180px;
+  margin-bottom: 1rem;
 }
 
-.text-section {
-  padding: 1.5rem;
-  width: 50%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  z-index: 2;
+.gallery-divider {
+  background-image: url('/path-to-divider-image.png'); /* The decorative divider under "GALLERY" */
+  background-repeat: no-repeat;
+  background-position: center;
+  height: 20px;
+  margin-bottom: 3rem;
 }
 
-.text-section h2 {
-  font-size: 1.5rem;
-  line-height: 2rem;
-  font-weight: 700;
-  margin-bottom: 0.5rem;
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
+  margin-bottom: 2.5rem;
 }
 
-.text-section p {
-  font-size: 0.875rem;
-  opacity: 0.9;
-}
-
-.image-section {
-  width: 50%;
+.gallery-item {
   position: relative;
+  overflow: hidden;
+  border-radius: 8px;
+  height: 200px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  transition: transform 0.3s ease;
 }
 
-.image-section img {
+.gallery-item:hover {
+  transform: translateY(-5px);
+}
+
+.gallery-item img {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
-/* Background Colors */
-.bg-olive { background-color: #556B2F; }
-.bg-maroon { background-color: #800000; }
-.bg-navy { background-color: #1E3A8A; }
-.bg-blue { background-color: #1E40AF; }
+.gallery-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  padding: 0.8rem;
+  text-align: center;
+}
+
+.gallery-overlay h3 {
+  color: white;
+  font-size: 0.9rem;
+  font-weight: 500;
+  margin: 0;
+  text-transform: uppercase;
+}
+
+.gallery-btn-container {
+  text-align: center;
+}
+
+.gallery-btn {
+  display: inline-block;
+  background-color: #333;
+  color: white;
+  padding: 0.7rem 2rem;
+  border-radius: 30px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.gallery-btn:hover {
+  background-color: #222;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* Responsive adjustments */
+@media (max-width: 992px) {
+  .gallery-grid {
+      grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 576px) {
+  .gallery-grid {
+      grid-template-columns: 1fr;
+  }
+  
+  .gallery-item {
+      height: 180px;
+  }
+}

@@ -1,137 +1,119 @@
-"use client";
-import { useEffect, useRef, useState } from "react";
 import { Link } from 'react-router-dom';
-import './Home.css';
+import './Home.css'; // We'll create this CSS file next
 
-export default function Home() {
-    const [isVisible, setIsVisible] = useState(false);
-    const sectionRef = useRef(null);
-    
-    const services = [
-        {
-            title: "Venue",
-            subtitle: "Banquet, Party Palace, Hotel",
-            image: "/Image/image1.png",
-            bgColor: "bg-olive",
-        },
-        {
-            title: "Makeup",
-            subtitle: "Bridal Makeup, Family Makeup",
-            image: "/Image/image2.png",
-            bgColor: "bg-maroon",
-        },
-        {
-            title: "Decor",
-            subtitle: "Stage, Mandap",
-            image: "/Image/image3.png",
-            bgColor: "bg-navy",
-        },
-        {
-            title: "Entertainment",
-            subtitle: "DJ, Music, Microphone",
-            image: "/Image/image1.png",
-            bgColor: "bg-blue",
-        },
-    ];
-
-    useEffect(() => {
-        const observer = new IntersectionObserver(
-            (entries) => {
-                entries.forEach((entry) => {
-                    if (entry.isIntersecting) {
-                        setIsVisible(true);
-                        observer.unobserve(entry.target);
-                    }
-                });
-            },
-            { threshold: 0.5 }
-        );
-
-        if (sectionRef.current) {
-            observer.observe(sectionRef.current);
-        }
-
-        return () => {
-            observer.disconnect();
-        };
-    }, []);
-
+const HomePage = () => {
     return (
-        <div className="home-page">
-            {/* Header Section */}
-            <div className="header-section">
-                {/* Left Section: Heading */}
-                <div className="heading-left">
-                    <h1>
-                        All-in-One Expertise:{" "}
-                        <br />
-                        <span className="accent-text">Your Forever Service Partner</span>
-                    </h1>
+        <div className="homepage">
+            {/* Hero Section */}
+            <section className="hero-section">
+                <div className="hero-content">
+                    <h1 className="hero-title">Plant Your Dream Wedding With Us</h1>
+                    <p className="hero-subtitle">We ensure every detail is perfect.</p>
+                    <button className="cta-button">Rose for Cream!</button>
                 </div>
-
-                {/* Right Section: Description */}
-                <div className="description-right">
-                    <p>
-                        A celebration is a beautiful journey, a joyous moment where dreams
-                        come alive. Whether it is a wedding, birthday, corporate event, or
-                        any special occasion, we believe everyone deserves a venue that
-                        reflects their unique vision and creates lasting memories.
-                    </p>
-                </div>
-            </div>
-
-            {/* Services Section */}
-            <div
-                ref={sectionRef}
-                className={`services-section ${isVisible ? "visible" : "hidden"}`}
-            >
-                {services.map((service, index) => (
-                    <div key={index} className={`service-card ${service.bgColor}`}>
-                        {/* Left Text Section */}
-                        <div className="text-section">
-                            <h2>{service.title}</h2>
-                            <p>{service.subtitle}</p>
-                        </div>
-
-                        {/* Right Image Section */}
-                        <div className="image-section">
-                            <img
-                                src={service.image}
-                                alt={service.title}
-                            />
-                        </div>
-                    </div>
-                ))}
-            </div>
+            </section>
 
             {/* About Section */}
-            <div className="about-container">
-                <div className="about-content">
-                    <div className="about-text">
-                        <h2>Why <span className="accent-text">Celebration Station?</span></h2>
-                        <div className="description-group">
-                            <p className="description">
-                                At Celebration Station, we bring your dream events to life. Discover stunning venues, trusted vendors, and seamless planning—
-                                all within your budget. Make every celebration unforgettable with us!
-                            </p>
-                            <p className="description">
-                                At Celebration Station, we bring your dream events to life. Discover stunning venues, trusted vendors and seamless planning—
-                                all within your budget. Make every celebration unforgettable with us!
-                            </p>
-                        </div>
-                        <Link href="/about" className="cta-button">
-                            About Us
-                        </Link>
+            <section className="about-section">
+                <div className="container">
+                    <h2 className="section-title">About Us</h2>
+                    <div className="about-content">
+                        <p>
+                            A wedding is such a special and intimate celebration; a sweetly constructed dream 
+                            brought to life. All couples, we firmly believe, deserve to have a wedding that 
+                            they can not only cherish and remember fondly.
+                        </p>
+                        <p>
+                            Wedtayari is a Nepali Wedding website where you find the best wedding vendors 
+                            under your budget. Check prices, get verified reviews, and check work done by 
+                            the vendors to save your time for unnecessary hassles.
+                        </p>
+                        {/* <div className="about-btn-container">
+                            <a href="/about" className="about-btn">Learn More About Us</a>
+                        </div> */}
                     </div>
-                    <div className="about-image">
-                        <img 
-                            src="/Image/logo.png" 
-                            alt="Celebration Station Logo" 
-                            className="logo-img" 
-                        />
+                    <div className="about-btn-container">
+                        <Link to="/about" className="about-btn">Learn More About Us</Link>
                     </div>
                 </div>
-            </div>
+            </section>
+
+            {/* Our Services Section */}
+            <section className="services-section">
+                <div className="container">
+                    <h2 className="section-title">Our Services</h2>
+                    <div className="services-header">
+                        <h3 className="services-title">One Stop Solutions: 360 Services Expertises</h3>
+                    </div>
+                    <div className="services-grid">
+                        {/* Service Cards similar to Image 1 */}
+                        <div className="service-card">
+                            <h4>WHAT IS LOREM IPSUM?</h4>
+                            <p>Lorem ipsum is simply dummy text of the printing an</p>
+                            <button className="read-more">Read More</button>
+                        </div>
+                        <div className="service-card">
+                            <h4>WHAT IS LOREM IPSUM?</h4>
+                            <p>Lorem ipsum is simply dummy text of the printing an</p>
+                            <button className="read-more">Read More</button>
+                        </div>
+                        <div className="service-card">
+                            <h4>WHAT IS LOREM IPSUM?</h4>
+                            <p>Lorem ipsum is simply dummy text of the printing an</p>
+                            <button className="read-more">Read More</button>
+                        </div>
+                        <div className="service-card">
+                            <h4>WHAT IS LOREM IPSUM?</h4>
+                            <p>Lorem ipsum is simply dummy text of the printing an</p>
+                            <button className="read-more">Read More</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            {/* Gallery Section */}
+            <section className="gallery-section">
+                <div className="container">
+                    <h2 className="section-title">GALLERY</h2>
+                    <div className="gallery-divider"></div>
+                    
+                    <div className="gallery-grid">
+                        <div className="gallery-item">
+                            <img src="/path-to-birthday-image.jpg" alt="Birthday Gallery" />
+                            <div className="gallery-overlay">
+                                <h3>BIRTHDAY GALLERY</h3>
+                            </div>
+                        </div>
+                        
+                        <div className="gallery-item">
+                            <img src="/path-to-wedding-image.jpg" alt="Wedding Gallery" />
+                            <div className="gallery-overlay">
+                                <h3>WEDDING GALLERY</h3>
+                            </div>
+                        </div>
+                        
+                        <div className="gallery-item">
+                            <img src="/path-to-special-occasion-image.jpg" alt="Special Occasion Gallery" />
+                            <div className="gallery-overlay">
+                                <h3>SPECIAL OCCASION GALLERY</h3>
+                            </div>
+                        </div>
+                        
+                        <div className="gallery-item">
+                            <img src="/path-to-corporate-image.jpg" alt="Corporate Gallery" />
+                            <div className="gallery-overlay">
+                                <h3>CORPORATE GALLERY</h3>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div className="gallery-btn-container">
+                        <a href="/gallery" className="gallery-btn">View More</a>
+                    </div>
+                </div>
+            </section>
         </div>
     );
-}
+};
+
+export default HomePage;

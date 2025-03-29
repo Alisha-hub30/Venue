@@ -220,7 +220,18 @@ export const sendResetOtp = async (req, res) => {
       text: `Your OTP for resetting your password is ${otp}. Use this OTP to proceed with resetting your password.`,
     };
     await transporter.sendMail(mailOptions);
+
+    retuen register.json({success: true, message:'OTP sent to your email'})
   } catch (error) {
     return res.json({ success: false, message: error.message });
   }
 };
+
+//Reset User Password
+export const resetPassword = async (req, res) => {
+  const{email, otp, newPassword} = req.body;
+
+  if (!email || !oto ||!newPassword){
+    return res.json({success:})
+  }
+}
