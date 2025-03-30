@@ -3,13 +3,13 @@ import './Home.css'; // We'll create this CSS file next
 
 const HomePage = () => {
     return (
+        <>
         <div className="homepage">
             {/* Hero Section */}
             <section className="hero-section">
                 <div className="hero-content">
                     <h1 className="hero-title">Plant Your Dream Wedding With Us</h1>
                     <p className="hero-subtitle">We ensure every detail is perfect.</p>
-                    <button className="cta-button">Rose for Cream!</button>
                 </div>
             </section>
 
@@ -79,28 +79,28 @@ const HomePage = () => {
                     
                     <div className="gallery-grid">
                         <div className="gallery-item">
-                            <img src="/path-to-birthday-image.jpg" alt="Birthday Gallery" />
+                            <img src="\public\LandingPhoto.jpg" alt="Birthday Gallery" />
                             <div className="gallery-overlay">
                                 <h3>BIRTHDAY GALLERY</h3>
                             </div>
                         </div>
                         
                         <div className="gallery-item">
-                            <img src="/path-to-wedding-image.jpg" alt="Wedding Gallery" />
+                            <img src="\public\LandingPhoto.jpg" alt="Wedding Gallery" />
                             <div className="gallery-overlay">
                                 <h3>WEDDING GALLERY</h3>
                             </div>
                         </div>
                         
                         <div className="gallery-item">
-                            <img src="/path-to-special-occasion-image.jpg" alt="Special Occasion Gallery" />
+                            <img src="\public\LandingPhoto.jpg" alt="Special Occasion Gallery" />
                             <div className="gallery-overlay">
                                 <h3>SPECIAL OCCASION GALLERY</h3>
                             </div>
                         </div>
                         
                         <div className="gallery-item">
-                            <img src="/path-to-corporate-image.jpg" alt="Corporate Gallery" />
+                            <img src="\public\LandingPhoto.jpg" alt="Corporate Gallery" />
                             <div className="gallery-overlay">
                                 <h3>CORPORATE GALLERY</h3>
                             </div>
@@ -112,7 +112,12 @@ const HomePage = () => {
                     </div>
                 </div>
             </section>
+
+            
         </div>
+
+        </>
+
     );
 };
 

@@ -1,0 +1,118 @@
+/* Footer styling */
+.footer-container {
+    /* background-color: #8B0000; */
+    background-color: #6D0C0E; /* Dark red similar to the example */
+    color: #fff;
+    padding: 40px 20px;
+    width: 100%;
+  }
+  
+  .footer-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+  
+  .footer-section {
+    flex: 1;
+    min-width: 250px;
+    margin-bottom: 20px;
+    padding: 0 15px;
+  }
+  
+  .footer-section h3 {
+    font-size: 22px;
+    margin-bottom: 20px;
+    color: #fff;
+  }
+  
+  .footer-section ul {
+    list-style: none;
+  }
+  
+  .footer-section ul li {
+    margin-bottom: 12px;
+  }
+  
+  .footer-section ul li a {
+    color: #fff;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+  }
+  
+  .footer-section ul li a:hover {
+    text-decoration: underline;
+    color: #FFD700; /* Gold color on hover */
+  }
+  
+  .footer-section ul li a::before {
+    content: "• ";
+    color: #FFD700;
+    margin-right: 8px;
+  }
+  
+  .contact-info {
+    margin-bottom: 15px;
+  }
+  
+  .contact-info p {
+    margin-bottom: 5px;
+  }
+  
+  .contact-info a {
+    color: #FFD700;
+    text-decoration: none;
+  }
+  
+  .contact-info a:hover {
+    text-decoration: underline;
+  }
+  
+  .footer-bottom {
+    text-align: center;
+    width: 100%;
+    padding-top: 30px;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+    margin-top: 20px;
+  }
+  
+  .footer-bottom h2 {
+    color: #FFD700;
+    font-size: 28px;
+    margin-bottom: 15px;
+  }
+  
+  .footer-bottom p {
+    font-size: 20px;
+    color: #FFD700;
+    line-height: 1.4;
+    margin-top: 15px;
+  }
+  
+  .contact-button {
+    display: inline-block;
+    background-color: transparent;
+    color: #fff;
+    padding: 10px 25px;
+    border: 2px solid #fff;
+    border-radius: 30px;
+    text-decoration: none;
+    font-weight: bold;
+    margin-top: 15px;
+    transition: all 0.3s ease;
+  }
+  
+  .contact-button:hover {
+    background-color: #fff;
+    color: #8B0000;
+  }
+  
+  /* Responsive adjustments */
+  @media screen and (max-width: 768px) {
+    .footer-section {
+      flex: 100%;
+    }
+  }

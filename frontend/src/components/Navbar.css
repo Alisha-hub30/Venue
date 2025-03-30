@@ -62,13 +62,14 @@
 .signin-btn {
     background-color: #6D0C0E;
     color: white !important;
-    padding: 0.6rem 1.8rem;
+    /* padding: 2rem 1.8rem; */
     border-radius: 50px;
     display: flex;
     align-items: center;
     gap: 0.5rem;
     transition: all 0.3s ease;
     border: 2px solid transparent;
+
 }
 
 .signin-btn:hover {
