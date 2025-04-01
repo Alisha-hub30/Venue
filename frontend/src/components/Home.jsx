@@ -40,54 +40,94 @@ const HomePage = () => {
 
             {/* Our Services Section */}
             <section className="services-section">
-                <div className="container">
-                    <h2 className="section-title">Our Services</h2>
-                    <div className="services-header">
-                        <h3 className="services-title">One Stop Solutions: 360 Services Expertises</h3>
-                    </div>
-                    <div className="services-grid">
-                        {/* Venue Card */}
-                        <div className="service-card">
-                            <div className="service-image">
-                                <img src="/LandingPhoto.jpg" alt="Venue services" />
-                            </div>
-                            <h4>Venue</h4>
-                            <p>Lorem ipsum is simply dummy text of the printing an</p>
-                            <a href="/services" className="read-more">Read More</a>
-                        </div>
-                        
-                        {/* Decoration Card */}
-                        <div className="service-card">
-                            <div className="service-image">
-                                <img src="/LandingPhoto.jpg" alt="Decoration services" />
-                            </div>
-                            <h4>Decoration</h4>
-                            <p>Lorem ipsum is simply dummy text of the printing an</p>
-                            <a href="/services" className="read-more">Read More</a>
-                        </div>
-                        
-                        {/* Makeup Card */}
-                        <div className="service-card">
-                            <div className="service-image">
-                                <img src="/LandingPhoto.jpg" alt="Makeup services" />
-                            </div>
-                            <h4>Makeup</h4>
-                            <p>Lorem ipsum is simply dummy text of the printing an</p>
-                            <a href="/services" className="read-more">Read More</a>
-                        </div>
-                        
-                        {/* Event Planner Card */}
-                        <div className="service-card">
-                            <div className="service-image">
-                                <img src="/LandingPhoto.jpg" alt="Event planning services" />
-                            </div>
-                            <h4>Event Planner</h4>
-                            <p>Lorem ipsum is simply dummy text of the printing an</p>
-                            <a href="/services" className="read-more">Read More</a>
-                        </div>
-                    </div>
+    <div className="container">
+        <h2 className="section-title">Our Services</h2>
+        <div className="services-header">
+            <h3 className="services-title">One Stop Solutions: 360 Services Expertises</h3>
+        </div>
+        <div className="services-grid-new">
+            {/* Photography Card */}
+            <div className="service-card-new photography">
+                <div className="service-content">
+                    <h4>Photography ...</h4>
+                    <p>Photography and Videography</p>
                 </div>
-            </section>
+                <div className="service-image">
+                    <img src="/LandingPhoto.jpg" alt="Photography services" />
+                </div>
+            </div>
+            
+            {/* Makeup Card */}
+            <div className="service-card-new makeup">
+                <div className="service-content">
+                    <h4>Makeup &raquo;</h4>
+                    <p>Bridal Makeup & Family Makeup</p>
+                </div>
+                <div className="service-image">
+                    <img src="/LandingPhoto.jpg" alt="Makeup services" />
+                </div>
+            </div>
+            
+            {/* Clothing Card */}
+            <div className="service-card-new clothing">
+                <div className="service-content">
+                    <h4>Clothing &raquo;</h4>
+                    <p>Bridal Lehenga, Saree, Groom Suit</p>
+                </div>
+                <div className="service-image">
+                    <img src="/LandingPhoto.jpg" alt="Clothing services" />
+                </div>
+            </div>
+            
+            {/* Venue Card */}
+            <div className="service-card-new venue">
+                <div className="service-content">
+                    <h4>Venue &raquo;</h4>
+                    <p>Banquet, Party Palace, Hotel, Restaurant</p>
+                </div>
+                <div className="service-image">
+                    <img src="/LandingPhoto.jpg" alt="Venue services" />
+                </div>
+            </div>
+
+            {/* Baja (Music) Card */}
+            <div className="service-card-new music">
+                <div className="service-content">
+                    <h4>Baja (Music) &raquo;</h4>
+                    <p>Feel Music Around You</p>
+                </div>
+                <div className="service-image">
+                    <img src="/LandingPhoto.jpg" alt="Music services" />
+                </div>
+            </div>
+            
+            {/* Decorations Card */}
+            <div className="service-card-new decorations">
+                <div className="service-content">
+                    <h4>Decorations &raquo;</h4>
+                    <p>Stage, Mehendi, Mandap</p>
+                </div>
+                <div className="service-image">
+                    <img src="/LandingPhoto.jpg" alt="Decoration services" />
+                </div>
+            </div>
+            
+            {/* Invitation Card */}
+            <div className="service-card-new invitation">
+                <div className="service-content">
+                    <h4>Invitation Car...</h4>
+                    <p>Wedding Cards</p>
+                </div>
+                <div className="service-image">
+                    <img src="/LandingPhoto.jpg" alt="Invitation services" />
+                </div>
+            </div>
+        </div>
+    </div>
+    <div className="services-btn-container">
+            <a href="/services" className="services-btn">View All Services</a>
+        </div>
+</section>
 
             {/* Gallery Section */}
             <section className="gallery-section">

@@ -57,8 +57,225 @@
   box-shadow: 0 6px 12px rgba(109, 12, 14, 0.3);
 }
 /* Services Section */
+/* New Services Section Styles */
 .services-section {
-  background-color: #5a0a0c;
+  background-color: #f9f3f0;
+  padding: 80px 0;
+}
+
+.services-header {
+  text-align: center;
+  margin-bottom: 50px;
+}
+
+.section-title {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 2.5rem;
+  color: #333;
+}
+
+.services-title {
+  color: #333;
+  font-size: 2rem;
+  margin-bottom: 20px;
+}
+
+.services-grid-new {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Make the last card span full width if odd number of cards */
+.services-grid-new > *:last-child:nth-child(odd) {
+  grid-column: 1 / -1;
+  max-width: 50%;
+  margin: 0 auto;
+}
+
+.service-card-new {
+  position: relative;
+  height: 180px;
+  display: flex;
+  border-radius: 5px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.service-card-new:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+}
+
+.service-content {
+  padding: 20px;
+  width: 50%;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.service-image {
+  width: 50%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.service-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.service-card-new:hover .service-image img {
+  transform: scale(1.05);
+}
+
+.service-card-new h4 {
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+  font-weight: 600;
+}
+
+.service-card-new p {
+  margin: 0;
+  font-size: 0.9rem;
+  font-weight: 300;
+}
+
+/* Service-specific styles */
+.photography {
+  background-color: #6F4E37;
+}
+
+.photography .service-content {
+  color: white;
+}
+
+.makeup {
+  background-color: #B23636;
+}
+
+.makeup .service-content {
+  color: white;
+}
+
+.clothing {
+  background-color: #F1476D;
+}
+
+.clothing .service-content {
+  color: white;
+}
+
+.venue {
+  background-color: #273770;
+}
+
+.venue .service-content {
+  color: white;
+}
+
+.music {
+  background-color: #628D62;
+}
+
+.music .service-content {
+  color: white;
+}
+
+.decorations {
+  background-color: #D8CCCC;
+}
+
+.decorations .service-content {
+  color: #333;
+}
+
+.invitation {
+  background-color: #826F39;
+}
+
+.invitation .service-content {
+  color: white;
+}
+
+/* Services Button Container */
+.services-btn-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 2rem;
+}
+
+/* Services Button */
+.services-btn {
+  background-color: #8b0000;
+  color: #fff;
+  border: 1px solid #ddd;
+  padding: 0.625rem 1.5rem;
+  border-radius: 50px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.services-btn:hover {
+  background-color: #6d0101;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(139, 0, 0, 0.3);
+}
+
+.service-btn:hover {
+  background-color: #8b0000;
+  color: white;
+  border-color: #8b0000;
+  opacity: 0.9; /* Add a subtle hover effect */
+}
+
+/* Responsive adjustments */
+@media (max-width: 992px) {
+  .services-grid-new {
+    grid-template-columns: 1fr;
+  }
+  
+  .services-grid-new > *:last-child:nth-child(odd) {
+    grid-column: auto;
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .service-card-new {
+    flex-direction: column;
+    height: auto;
+  }
+  
+  .service-content, 
+  .service-image {
+    width: 100%;
+  }
+  
+  .service-image {
+    height: 180px;
+    order: -1; /* Places image above content on mobile */
+  }
+}
+
+@media (max-width: 576px) {
+  .service-image {
+    height: 150px;
+  }
+}
+/* .services-section { */
+  /* background-color: #5a0a0c;
   padding: 80px 0;
 }
 
@@ -138,12 +355,12 @@
 
 .read-more:hover {
   background-color: #e7c234;
-}
+} */
 
 /* Gallery Section */
 .gallery-section {
-  padding: 6rem 2rem;
-  background-color: #f9f9f9; /* Brown background color like in the image */
+  padding: 80px 0;
+  background-color: #f9f9f9;
   background-image: url('/path-to-subtle-texture.jpg'); /* Optional: Add a subtle texture */
 }
 
