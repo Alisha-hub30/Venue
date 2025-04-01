@@ -67,7 +67,9 @@
   margin-bottom: 50px;
 }
 
-
+.services-title .h2{
+  color: #f9f9f9;
+}
 .services-title {
   color: #f9f9f9;
   font-size: 2rem;
@@ -101,6 +103,26 @@
 .service-card p {
   margin-bottom: 20px;
   color: #666;
+}
+
+/* Service image styles */
+.service-image {
+  width: 100%;
+  height: 180px;
+  overflow: hidden;
+  margin-bottom: 15px;
+  border-radius: 4px;
+}
+
+.service-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.service-card:hover .service-image img {
+  transform: scale(1.05);
 }
 
 .read-more {

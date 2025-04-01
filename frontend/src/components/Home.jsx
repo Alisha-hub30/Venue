@@ -46,26 +46,44 @@ const HomePage = () => {
                         <h3 className="services-title">One Stop Solutions: 360 Services Expertises</h3>
                     </div>
                     <div className="services-grid">
-                        {/* Service Cards similar to Image 1 */}
+                        {/* Venue Card */}
                         <div className="service-card">
-                            <h4>WHAT IS LOREM IPSUM?</h4>
+                            <div className="service-image">
+                                <img src="/LandingPhoto.jpg" alt="Venue services" />
+                            </div>
+                            <h4>Venue</h4>
                             <p>Lorem ipsum is simply dummy text of the printing an</p>
-                            <button className="read-more">Read More</button>
+                            <a href="/services" className="read-more">Read More</a>
                         </div>
+                        
+                        {/* Decoration Card */}
                         <div className="service-card">
-                            <h4>WHAT IS LOREM IPSUM?</h4>
+                            <div className="service-image">
+                                <img src="/LandingPhoto.jpg" alt="Decoration services" />
+                            </div>
+                            <h4>Decoration</h4>
                             <p>Lorem ipsum is simply dummy text of the printing an</p>
-                            <button className="read-more">Read More</button>
+                            <a href="/services" className="read-more">Read More</a>
                         </div>
+                        
+                        {/* Makeup Card */}
                         <div className="service-card">
-                            <h4>WHAT IS LOREM IPSUM?</h4>
+                            <div className="service-image">
+                                <img src="/LandingPhoto.jpg" alt="Makeup services" />
+                            </div>
+                            <h4>Makeup</h4>
                             <p>Lorem ipsum is simply dummy text of the printing an</p>
-                            <button className="read-more">Read More</button>
+                            <a href="/services" className="read-more">Read More</a>
                         </div>
+                        
+                        {/* Event Planner Card */}
                         <div className="service-card">
-                            <h4>WHAT IS LOREM IPSUM?</h4>
+                            <div className="service-image">
+                                <img src="/LandingPhoto.jpg" alt="Event planning services" />
+                            </div>
+                            <h4>Event Planner</h4>
                             <p>Lorem ipsum is simply dummy text of the printing an</p>
-                            <button className="read-more">Read More</button>
+                            <a href="/services" className="read-more">Read More</a>
                         </div>
                     </div>
                 </div>

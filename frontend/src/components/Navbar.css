@@ -15,6 +15,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    position: relative; /* Added to position the mobile menu properly */
 }
 
 .logo {
@@ -62,14 +63,13 @@
 .signin-btn {
     background-color: #6D0C0E;
     color: white !important;
-    /* padding: 2rem 1.8rem; */
+    padding: 0.5rem 1.2rem; /* Fixed the padding */
     border-radius: 50px;
     display: flex;
     align-items: center;
     gap: 0.5rem;
     transition: all 0.3s ease;
     border: 2px solid transparent;
-
 }
 
 .signin-btn:hover {
@@ -88,6 +88,8 @@
     font-size: 1.5rem;
     color: #6D0C0E;
     cursor: pointer;
+    padding: 0.5rem;
+    z-index: 101;
 }
 
 @media (max-width: 768px) {
@@ -102,15 +104,16 @@
         right: 0;
         background-color: white;
         flex-direction: column;
-        padding: 1.5rem;
+        padding: 0; /* Start with no padding */
         box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
         max-height: 0;
         overflow: hidden;
         transition: max-height 0.3s ease, padding 0.3s ease;
+        gap: 0; /* Reset gap for mobile */
     }
     
     .nav-links.active {
-        max-height: 300px;
+        max-height: 350px; /* Increased to ensure enough space */
         padding: 1.5rem;
     }
     
@@ -124,6 +127,7 @@
         margin-top: 0.5rem;
         justify-content: center;
         width: 100%;
+        padding: 0.7rem 1.2rem; /* Adjusted for mobile */
     }
 }
 
