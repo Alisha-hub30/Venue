@@ -25,7 +25,7 @@ const Navbar = () => {
                     <Link to="/gallery" onClick={() => setIsMenuOpen(false)}>Gallery</Link>
                     <Link to="/contact" onClick={() => setIsMenuOpen(false)}>Contact</Link>
                     <Link to="/login" className="signin-btn" onClick={() => setIsMenuOpen(false)}>
-                        Sign in <span>→</span>
+                        Login
                     </Link>
                 </div>
             </div>

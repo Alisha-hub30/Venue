@@ -60,17 +60,19 @@
     width: 100%;
 }
 
+
 .signin-btn {
+    justify-items: center;
     background-color: #6D0C0E;
     color: white !important;
-    padding: 0.5rem 1.2rem; /* Fixed the padding */
-    border-radius: 50px;
+    padding: 0.5rem 1.2rem;
+    border-radius: 20px;
     display: flex;
     align-items: center;
-    gap: 0.5rem;
     transition: all 0.3s ease;
     border: 2px solid transparent;
 }
+
 
 .signin-btn:hover {
     background-color: white;
