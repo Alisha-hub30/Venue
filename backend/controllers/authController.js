@@ -221,7 +221,7 @@ export const sendResetOtp = async (req, res) => {
     };
     await transporter.sendMail(mailOptions);
 
-    retuen register.json({success: true, message:'OTP sent to your email'})
+    return register.json({ success: true, message: "OTP sent to your email" });
   } catch (error) {
     return res.json({ success: false, message: error.message });
   }
@@ -229,9 +229,30 @@ export const sendResetOtp = async (req, res) => {
 
 //Reset User Password
 export const resetPassword = async (req, res) => {
-  const{email, otp, newPassword} = req.body;
+  const { email, otp, newPassword } = req.body;
 
-  if (!email || !oto ||!newPassword){
-    return res.json({success:})
+  if (!email || !otp || !newPassword) {
+    return res.json({
+      success: false,
+      message: "Email. OTP, and new password are required",
+    });
   }
-}
+
+  try {
+    const user = await userModel.findOne({ email });
+
+    if (!user) {
+      return res.json({ success: false, message: "User not found" });
+    }
+
+    if (user.resetOtp == "" || user.resetOtp !== otp) {
+      return res.json({ success: false, message: "Invalid OTP" });
+    }
+
+    if (user.resetOtpExpireAt < Date.now()) {
+      return res.json({ success: false, message: "OTP Expired" });
+    }
+  } catch (error) {
+    return res.json({ success: false, message: error.message });
+  }
+};
