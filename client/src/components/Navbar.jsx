@@ -44,16 +44,16 @@ const Navbar = () => {
     }
 
     return (
-        <div className='w-full flex justify-between items-center p-4 sm:p-6 fixed top-0 left-0 right-0 bg-white z-50 shadow-sm'>
-            {/* Logo Only */}
+        <div className='w-full flex justify-between items-center px-25 fixed top-0 left-0 right-0 bg-white z-50 shadow-sm'>
+            {/* Keep Original Logo */}
             <img 
                 src={assets.logo} 
                 alt='Logo' 
-                className='w-12 h-12 sm:w-16 sm:h-16 cursor-pointer' 
+                className='h-24 cursor-pointer' 
                 onClick={() => navigate('/')}
             />
             
-            {/* Navigation Links */}
+            {/* Navigation Links - Centered */}
             <div className='hidden md:flex items-center gap-8'>
                 <button 
                     onClick={() => navigate('/')} 
@@ -115,8 +115,8 @@ const Navbar = () => {
             ) : (
                 <button
                     onClick={() => navigate('/login')}
-                    className='flex items-center gap-2 px-6 py-2 rounded-full transition-colors'
-                    style={{ backgroundColor: '#8b0000', color: 'white' }} // Using your logo color
+                    className='px-4 py-2 rounded transition-colors'
+                    style={{ backgroundColor: '#8b0000', color: 'white' }}
                 >
                     Login
                 </button>
