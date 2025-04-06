@@ -1,8 +1,8 @@
-const EmailVerify = ()=>{
+const ResetPassword = ()=>{
     return (
         <div>
         </div>
     )
 }
 
-export default EmailVerify
+export default ResetPassword
