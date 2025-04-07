@@ -44,7 +44,7 @@ const Home = () => {
             {/* Main Content Container - adding top margin to account for fixed navbar */}
             <div className="mt-20"> {/* This margin accounts for the fixed navbar height */}
                 {/* Hero Section */}
-                <section className="py-20 px-4 bg-[url('/LandingPhoto.jpg')] bg-cover bg-center">
+                <section className="py-50 px-4 bg-[url('/LandingPhoto.jpg')] bg-cover bg-center">
                     <div className="max-w-4xl mx-auto text-center">
                         <h1 className="text-3xl md:text-4xl font-bold text-red-900 mb-2">
                             Plan Your Dream Wedding With Us

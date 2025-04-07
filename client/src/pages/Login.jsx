@@ -14,6 +14,8 @@ const Login = () => {
     const [password, setPassword] = useState('')
     const [isLoading, setIsLoading] = useState(false)
 
+    const redirectPath = location.state?.redirectTo || '/'
+
     const onSubmitHandler = async (e) => {
         e.preventDefault()
         setIsLoading(true)
@@ -27,7 +29,7 @@ const Login = () => {
             if (data.success) {
                 setIsLoggedin(true)
                 await getUserData()
-                navigate('/')
+                navigate(redirectPath)
                 toast.success(`Welcome ${state === 'Sign Up' ? 'to our platform!' : 'back!'}`)
             } else {
                 toast.error(data.message)

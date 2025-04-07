@@ -78,9 +78,31 @@ const VenueDetails = () => {
         const selectedVenue = venueData.find(v => v.id === parseInt(id));
         setVenue(selectedVenue);
         
-        // Check if user is logged in
-        const userLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
-        setIsLoggedIn(userLoggedIn);
+        // Check for pending bookings in session storage
+        const pendingBooking = sessionStorage.getItem('pendingBooking');
+        if (pendingBooking) {
+            const bookingData = JSON.parse(pendingBooking);
+            if (bookingData.venueId === parseInt(id)) {
+                // Restore booking details
+                setStartDate(bookingData.startDate);
+                setEndDate(bookingData.endDate);
+                setGuestCount(bookingData.guestCount);
+                // Clear the pending booking
+                sessionStorage.removeItem('pendingBooking');
+            }
+        }
+        
+        // Check authentication status from localStorage or your auth system
+        // This is where you should check if the user is logged in from your auth system
+        const userToken = localStorage.getItem('userToken'); // or whatever key you use
+        
+        // If there's a token, assume the user is logged in
+        if (userToken) {
+            setIsLoggedIn(true);
+        }
+        
+        // For testing purposes, you can force login with:
+        // setIsLoggedIn(true);
     }, [id]);
 
     const handleBookNow = () => {
@@ -89,6 +111,9 @@ const VenueDetails = () => {
             alert("Please fill in all required fields");
             return;
         }
+        
+        // Log the authentication state to debug
+        console.log("Authentication status:", isLoggedIn);
         
         // Check if user is logged in
         if (!isLoggedIn) {
@@ -299,6 +324,7 @@ const VenueDetails = () => {
                             >
                                 Book Now
                             </button>
+                            
                         </div>
                     </div>
                 </div>
