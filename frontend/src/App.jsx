@@ -1,30 +1,10 @@
-import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
-import './App.css';
-import About from './components/About';
-import Footer from './components/Footer';
-import Gallery from './components/Gallery';
-import Home from './components/Home';
-import Login from './components/Login';
-import Navbar from './components/Navbar';
-function App() {
-  return (
-    <Router>
-      <div className="app">
-        <Navbar />
-        <main>
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/about" element={<About />} />
-            <Route path='/gallery' element={<Gallery/>}/>
-            <Route path='/login' element={<Login/>}/>
-            {/* <Route path='/email-verify' element={<EmailVerify/>}/>
-            <Route path='/reset-password' element={<ResetPassword/>}/> */}
-          </Routes>
-        </main>
-        <Footer />
-      </div>
-    </Router>
-  );
-}
+import React from 'react'
+import "./App.css"
 
-export default App;
+export default function App() {
+  return (
+    <div>
+      App
+    </div>
+  )
+}
