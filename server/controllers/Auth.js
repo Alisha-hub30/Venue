@@ -91,4 +91,33 @@ const Logout = async (req, res) => {
 //         }
 //  }
 
-export { Login, Logout, register };
+const registerVendor = async (req, res) => {
+  try {
+    const { name, email, password } = req.body;
+
+    const existUser = await UserModel.findOne({ email });
+    if (existUser) {
+      return res
+        .status(401)
+        .json({ success: false, message: "User already Exists" });
+    }
+    const hashedPassword = await bcryptjs.hashSync(password, 10);
+    const newVendor = new UserModel({
+      name,
+      email,
+      password: hashedPassword,
+      role: "vendor", // Set role as vendor
+    });
+
+    await newVendor.save();
+
+    res
+      .status(200)
+      .json({ message: "Vendor registered successfully", vendor: newVendor });
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Internal server error" });
+    console.log(error);
+  }
+};
+
+export { Login, Logout, register, registerVendor };

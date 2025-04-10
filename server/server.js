@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import express from "express";
 import AdminRoutes from "./routes/AdminRoutes.js";
 import AuthRoutes from "./routes/Auth.js";
+import vendorRoutes from "./routes/vendorRoues.js";
 import DbCon from "./utlis/db.js";
 
 dotenv.config();
@@ -23,6 +24,7 @@ app.use(
 
 app.use("/api/auth", AuthRoutes);
 app.use("/api/admin", AdminRoutes);
+app.use("/api/vendor", vendorRoutes);
 
 app.get("/", (req, res) => {
   res.send("test");

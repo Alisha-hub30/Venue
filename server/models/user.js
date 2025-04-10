@@ -13,7 +13,7 @@ const userSechmea = new mongoose.Schema(
     },
     role: {
       type: String,
-      enum: ["admin", "user"],
+      enum: ["admin", "user", "vendor"],
       default: "user",
     },
     password: {
