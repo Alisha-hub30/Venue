@@ -217,17 +217,7 @@ const VenueDetails = () => {
                             <p className="mt-4 text-gray-700 italic">{venue.bookingNote}</p>
                         </div>
 
-                        <div className="border rounded-lg p-6 mb-6">
-                            <h3 className="text-xl font-bold mb-4">Policies</h3>
-                            <div className="space-y-4">
-                                {["Menu Policy", "Time Policy", "Payment Policy", "Damage Policy", "Cancellation Policy"].map((policy, index) => (
-                                    <div key={index} className="border rounded p-4 flex justify-between items-center">
-                                        <span>{policy}</span>
-                                        <button className="text-red-600">+</button>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
+                    
 
                         <div className="mb-6">
                             <h3 className="text-xl font-bold mb-4">Halls</h3>
@@ -245,10 +235,10 @@ const VenueDetails = () => {
                             </div>
                         </div>
 
-                        <div className="mb-6">
+                        {/* <div className="mb-6">
                             <h3 className="text-xl font-bold mb-4">Where you'll be</h3>
                             <div className="bg-gray-200 h-64 rounded-lg"></div>
-                        </div>
+                        </div> */}
                     </div>
 
                     {/* Booking form */}

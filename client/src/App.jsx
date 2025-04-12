@@ -3,7 +3,9 @@ import { Route, Routes } from 'react-router-dom'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import About from './pages/About'
+import Conatct from './pages/Conatct'
 import EmailVerify from './pages/EmailVerify'
+import Gallery from './pages/Gallery'
 import Home from './pages/Home'
 import Login from './pages/Login'
 import ResetPassword from './pages/ResetPassword'
@@ -17,6 +19,8 @@ const App = () => {
       <ToastContainer/>
       <Routes>
         <Route path='/' element={<Home/>}/>
+        <Route path='/gallery' element={<Gallery/>}/>
+        <Route path='/contact' element={<Conatct/>}/>
         <Route path="/about" element={<About />}/>
         <Route path="/services" element={<Services />}/>
         <Route path="/venue" element={<Venue />}/>

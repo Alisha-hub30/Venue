@@ -10,7 +10,7 @@ const Getuser = async (req, res) => {
   }
 };
 
-const deletUser = async (req, res) => {
+const deleteUser = async (req, res) => {
   try {
     const userId = req.params.id;
 
@@ -30,4 +30,4 @@ const deletUser = async (req, res) => {
   }
 };
 
-export { deletUser, Getuser };
+export { deleteUser, Getuser };

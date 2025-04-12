@@ -76,20 +76,6 @@ const Logout = async (req, res) => {
     console.log(error);
   }
 };
-//  const CheckUser=async(req,res)=>{
-//         try {
-//             const user=req.user
-//             if (!user) {
-//                 res.status(404).json({message:'User not found'})
-//             }
-//             res.status(200).json(user)
-
-//         } catch (error) {
-//             res.status(500).json({message:"internal server error"})
-//             console.log(error)
-
-//         }
-//  }
 
 const registerVendor = async (req, res) => {
   try {
@@ -120,4 +106,17 @@ const registerVendor = async (req, res) => {
   }
 };
 
-export { Login, Logout, register, registerVendor };
+const CheckUser = async (req, res) => {
+  try {
+    const user = req.user;
+    if (!user) {
+      res.status(404).json({ message: "User not found" });
+    }
+    res.status(200).json(user);
+  } catch (error) {
+    res.status(500).json({ message: "internal server error" });
+    console.log(error);
+  }
+};
+
+export { CheckUser, Login, Logout, register, registerVendor };
