@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
-import { Outlet, useNavigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
+import { Outlet, useNavigate } from 'react-router-dom'
 export default function AdminLayout() {
     const user=useSelector((state) => state.Auth.user)
         const navigate=useNavigate()

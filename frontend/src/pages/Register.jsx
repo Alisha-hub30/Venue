@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { toast } from 'react-hot-toast';
 import { Link } from 'react-router-dom';
+import NavBar from '../components/Navbar';
 import { post } from '../services/ApiEndpints';
 
 export default function Register() {
@@ -23,6 +24,9 @@ export default function Register() {
   };
 
   return (
+    <div>
+      <NavBar/>
+    
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <div className="w-full max-w-md p-8 space-y-6 bg-white rounded shadow-md">
         <h2 className="text-2xl font-bold text-center text-gray-800">Register</h2>
@@ -65,6 +69,6 @@ export default function Register() {
           </p>
         </form>
       </div>
-    </div>
+    </div></div>
   );
 }

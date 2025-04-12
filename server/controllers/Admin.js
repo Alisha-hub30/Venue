@@ -30,4 +30,48 @@ const deleteUser = async (req, res) => {
   }
 };
 
-export { deleteUser, Getuser };
+const GetVendors = async (req, res) => {
+  try {
+    // Find all users with role "vendor"
+    const vendors = await UserModel.find({ role: "vendor" });
+    res.status(200).json({ success: true, vendors });
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Internal server error" });
+    console.log(error);
+  }
+};
+
+const deleteVendor = async (req, res) => {
+  try {
+    const vendorId = req.params.id;
+
+    // Check if the user exists and is a vendor
+    const vendor = await UserModel.findById(vendorId);
+
+    if (!vendor) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Vendor not found" });
+    }
+
+    if (vendor.role !== "vendor") {
+      return res
+        .status(400)
+        .json({ success: false, message: "User is not a vendor" });
+    }
+
+    // Delete the vendor
+    const deletedVendor = await UserModel.findByIdAndDelete(vendorId);
+
+    res.status(200).json({
+      success: true,
+      message: "Vendor deleted successfully",
+      vendor: deletedVendor,
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Internal server error" });
+    console.log(error);
+  }
+};
+
+export { deleteUser, deleteVendor, Getuser, GetVendors };

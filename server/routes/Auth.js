@@ -8,14 +8,14 @@ import {
   register,
   registerVendor,
 } from "../controllers/Auth.js";
-import { IsUser } from "../middleware/verifyToken.js";
+import { isUser } from "../middleware/verifyToken.js";
 const AuthRoutes = express.Router();
 
 AuthRoutes.post("/register", register);
 AuthRoutes.post("/register-vendor", registerVendor);
 AuthRoutes.post("/login", Login);
 AuthRoutes.post("/logout", Logout);
-AuthRoutes.get("/checkUser", IsUser, CheckUser);
+AuthRoutes.get("/checkUser", isUser, CheckUser);
 // AuthRoutes.post('/logout',Logout)
 // AuthRoutes.get('/CheckUser',IsUser,CheckUser)
 

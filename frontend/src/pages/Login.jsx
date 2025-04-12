@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { toast } from "react-hot-toast";
 import { useDispatch } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
+import NavBar from '../components/Navbar';
 import { SetUser } from '../redux/AuthSlice';
 import { post } from '../services/ApiEndpints';
 
@@ -18,13 +19,13 @@ export default function Login() {
             const request = await post('/api/auth/login', { email, password });
             const response = request.data;
             if (request.status==200) {
-              if (response.user.role =='admin') {
-                navigate('/admin')
-              }else if (response.user.role =='user') {
-                 navigate('/')
-              }
-              toast.success(response.message)
-              dispatch(SetUser(response.user))
+                if (response.user.role =='admin') {
+                    navigate('/admin')
+                }else if (response.user.role =='user') {
+                    navigate('/')
+                }
+                toast.success(response.message)
+                dispatch(SetUser(response.user))
             }
             console.log(response);
         } catch (error) {
@@ -33,7 +34,10 @@ export default function Login() {
     };
 
     return (
+    <div><NavBar/>
+        
         <div className="flex items-center justify-center min-h-screen bg-gray-100">
+            
             <div className="w-full max-w-md p-8 space-y-6 bg-white rounded shadow-md">
                 <h2 className="text-2xl font-bold text-center text-gray-800">Login</h2>
                 <form onSubmit={handleSubmit} className="space-y-4">
@@ -66,6 +70,6 @@ export default function Login() {
                     </p>
                 </form>
             </div>
-        </div>
+        </div></div>
     );
 }

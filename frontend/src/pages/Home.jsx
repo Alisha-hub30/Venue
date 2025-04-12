@@ -20,6 +20,7 @@ export default function Home() {
            disptach(Logout())
           navigate('/login')
        }
+       console.log(response.data)
     } catch (error) {
       console.log(error)
     }
