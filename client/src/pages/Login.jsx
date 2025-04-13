@@ -1,14 +1,15 @@
-
 import axios from 'axios'
 import React, { useContext, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { assets } from '../assets/assets'
 import { AppContent } from '../context/AppContext'
 
 const Login = () => {
     const navigate = useNavigate()
+    const location = useLocation()
     const { backendUrl, setIsLoggedin, getUserData } = useContext(AppContent)
+
     const [state, setState] = useState('Sign Up')
     const [name, setName] = useState('')
     const [email, setEmail] = useState('')
@@ -20,6 +21,7 @@ const Login = () => {
     const onSubmitHandler = async (e) => {
         e.preventDefault()
         setIsLoading(true)
+
         try {
             axios.defaults.withCredentials = true
             const endpoint = state === 'Sign Up' ? '/api/auth/register' : '/api/auth/login'
@@ -28,6 +30,8 @@ const Login = () => {
             const { data } = await axios.post(backendUrl + endpoint, payload)
 
             if (data.success) {
+                // Save auth token to localStorage (this is the fix!)
+                localStorage.setItem('userToken', data.token || 'dummyToken') // Replace 'token' if named differently
                 setIsLoggedin(true)
                 await getUserData()
                 navigate(redirectPath)
@@ -44,7 +48,6 @@ const Login = () => {
 
     return (
         <div className='flex items-center justify-center min-h-screen px-4 sm:px-6 bg-gradient-to-br from-blue-100 via-purple-100 to-pink-100'>
-            {/* Logo */}
             <img 
                 onClick={() => navigate('/')} 
                 src={assets.logo} 
@@ -52,9 +55,7 @@ const Login = () => {
                 className='absolute left-5 sm:left-10 top-5 w-24 sm:w-32 cursor-pointer transition-transform hover:scale-105'
             />
             
-            {/* Auth Container */}
             <div className='bg-white p-8 rounded-2xl shadow-xl w-full max-w-md backdrop-blur-sm bg-opacity-90 border border-gray-100'>
-                {/* Header */}
                 <div className='text-center mb-8'>
                     <h2 className='text-3xl font-bold text-gray-800'>
                         {state === 'Sign Up' ? 'Create Account' : 'Welcome Back'}
@@ -64,7 +65,6 @@ const Login = () => {
                     </p>
                 </div>
 
-                {/* Form */}
                 <form onSubmit={onSubmitHandler} className='space-y-5'>
                     {state === 'Sign Up' && (
                         <div className='relative'>
@@ -78,10 +78,11 @@ const Login = () => {
                                 type="text"
                                 placeholder='Full Name'
                                 required
+                                autoComplete="name"
                             />
                         </div>
                     )}
-                    
+
                     <div className='relative'>
                         <div className='absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none'>
                             <img src={assets.mail_icon} alt="Email" className='h-5 w-5 text-gray-400' />
@@ -93,6 +94,7 @@ const Login = () => {
                             type="email"
                             placeholder='Email address'
                             required
+                            autoComplete="email"
                         />
                     </div>
 
@@ -108,6 +110,7 @@ const Login = () => {
                             placeholder='Password'
                             required
                             minLength="6"
+                            autoComplete={state === 'Sign Up' ? "new-password" : "current-password"}
                         />
                     </div>
 
@@ -142,7 +145,6 @@ const Login = () => {
                     </button>
                 </form>
 
-                {/* Toggle between Login/Signup */}
                 <div className='mt-6 text-center text-sm text-gray-600'>
                     {state === 'Sign Up' ? (
                         <p>

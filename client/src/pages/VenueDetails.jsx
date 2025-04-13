@@ -11,6 +11,7 @@ const VenueDetails = () => {
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
     const [guestCount, setGuestCount] = useState('');
+
     
     // Authentication state
     const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -92,9 +93,8 @@ const VenueDetails = () => {
             }
         }
         
-        // Check authentication status from localStorage or your auth system
-        // This is where you should check if the user is logged in from your auth system
-        const userToken = localStorage.getItem('userToken'); // or whatever key you use
+    
+        const userToken = localStorage.getItem('userToken');
         
         // If there's a token, assume the user is logged in
         if (userToken) {
@@ -234,11 +234,6 @@ const VenueDetails = () => {
                                 ))}
                             </div>
                         </div>
-
-                        {/* <div className="mb-6">
-                            <h3 className="text-xl font-bold mb-4">Where you'll be</h3>
-                            <div className="bg-gray-200 h-64 rounded-lg"></div>
-                        </div> */}
                     </div>
 
                     {/* Booking form */}
@@ -257,11 +252,12 @@ const VenueDetails = () => {
                                 <label className="block mb-1">Start Date <span className="text-red-500">*</span></label>
                                 <input 
                                     type="date" 
+                                    autoComplete="off" // ← Add this line
                                     value={startDate}
                                     onChange={(e) => setStartDate(e.target.value)}
                                     className="w-full p-2 border rounded"
                                     required
-                                />
+                                    />
                             </div>
                             
                             <div className="mb-4">

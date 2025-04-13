@@ -92,7 +92,7 @@ const registerVendor = async (req, res) => {
       name,
       email,
       password: hashedPassword,
-      role: "vendor", // Set role as vendor
+      role: "vendor",
     });
 
     await newVendor.save();

@@ -4,7 +4,7 @@ import ServiceModel from "../models/service.js";
 // Get all available services
 const getAllServices = async (req, res) => {
   try {
-    // Allow filtering by category, price range, etc.
+    // Allow filtering by category, price range
     const { category, minPrice, maxPrice } = req.query;
 
     let query = { isAvailable: true };
@@ -68,7 +68,6 @@ const bookService = async (req, res) => {
     const { serviceId, bookingDate, notes } = req.body;
     const userId = req.user._id;
 
-    // Verify service exists and is available
     const service = await ServiceModel.findOne({
       _id: serviceId,
       isAvailable: true,

@@ -14,7 +14,6 @@ const ServiceItem = ({ title, description }) => {
 };
 
 export default function LandingPage() {
-    // Added fallback for Redux state
     const user = useSelector((state) => state.Auth?.user) || null;
     
     return (
