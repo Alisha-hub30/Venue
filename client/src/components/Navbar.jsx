@@ -110,6 +110,13 @@ const Navbar = () => {
                             </div>
                             <div className='absolute hidden group-hover:block right-0 z-10 bg-white rounded-md shadow-lg pt-2 w-48'>
                                 <ul className='py-1'>
+                                {userData.role === 'admin' && (
+                                    <li 
+                                        onClick={() => navigate('/dashboard')}
+                                        className='px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer'
+                                    >
+                                        Dashboard
+                                    </li>)}
                                     {!userData.isAccountVerified && (
                                         <li 
                                             onClick={sendVerificationOtp} 
