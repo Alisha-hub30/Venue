@@ -12,7 +12,7 @@ import { isUser } from "../middleware/verifyToken.js";
 const AuthRoutes = express.Router();
 
 AuthRoutes.post("/register", register);
-AuthRoutes.post("/register-vendor", registerVendor);
+AuthRoutes.post("/registerVendor", registerVendor);
 AuthRoutes.post("/login", Login);
 AuthRoutes.post("/logout", Logout);
 AuthRoutes.get("/checkUser", isUser, CheckUser);

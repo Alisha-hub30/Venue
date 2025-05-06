@@ -2,6 +2,7 @@ import React from 'react'
 import { Route, Routes } from 'react-router-dom'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
+import ContextDebug from './context/ContextDebug'
 import About from './pages/About'
 import Conatct from './pages/Conatct'
 import Dashboard from './pages/Dashboard'
@@ -18,6 +19,7 @@ const App = () => {
   return (
     <div>
       <ToastContainer/>
+      <ContextDebug/>
       <Routes>
         <Route path='/' element={<Home/>}/>
         <Route path="/dashboard" element={<Dashboard />} />

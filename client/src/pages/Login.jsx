@@ -21,25 +21,48 @@ const Login = () => {
     const onSubmitHandler = async (e) => {
         e.preventDefault()
         setIsLoading(true)
-
+    
         try {
             axios.defaults.withCredentials = true
             const endpoint = state === 'Sign Up' ? '/api/auth/register' : '/api/auth/login'
             const payload = state === 'Sign Up' ? { name, email, password } : { email, password }
-
+    
             const { data } = await axios.post(backendUrl + endpoint, payload)
-
+            console.log('Login response:', data) // Debug log
+    
             if (data.success) {
-                // Save auth token to localStorage (this is the fix!)
-                localStorage.setItem('userToken', data.token || 'dummyToken') // Replace 'token' if named differently
+                // Save auth token to localStorage if provided
+                if (data.token) {
+                    localStorage.setItem('userToken', data.token)
+                }
+                
                 setIsLoggedin(true)
-                await getUserData()
+                
+                // Get user data and wait for it
+                const userDataResponse = await axios.get(backendUrl + '/api/user/data')
+                console.log('User data response after login:', userDataResponse.data) // Debug log
+                
+                if(userDataResponse.data.success && userDataResponse.data.userData) {
+                    const userData = userDataResponse.data.userData
+                    
+                    // The issue might be here - check if role exists
+                    console.log('Full userData object:', userData) // Add this
+                    console.log('userData.role specifically:', userData.role) // Add this
+                    
+                    if(userData.role === 'admin') {
+                        console.log('Admin is logged in - Name:', userData.name, 'Email:', userData.email)
+                    }
+                }
+                
+                await getUserData() // Also update context
+                
                 navigate(redirectPath)
                 toast.success(`Welcome ${state === 'Sign Up' ? 'to our platform!' : 'back!'}`)
             } else {
                 toast.error(data.message)
             }
         } catch (error) {
+            console.error('Login error:', error.response?.data || error)
             toast.error(error.response?.data?.message || error.message)
         } finally {
             setIsLoading(false)

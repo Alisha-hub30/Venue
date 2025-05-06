@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import { Outlet, useNavigate } from 'react-router-dom'
+import NavBar from '../components/Navbar'
 export default function UserLayout() {
     const user=useSelector((state) => state.Auth.user)
     const navgiate=useNavigate()
@@ -12,6 +13,8 @@ export default function UserLayout() {
           }
     },[user])
   return (
-    <Outlet/>
+    <><NavBar/>
+    <Outlet/></>
+    
   )
 }

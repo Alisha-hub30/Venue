@@ -22,7 +22,7 @@ export default function Login() {
                 if (response.user.role =='admin') {
                     navigate('/admin')
                 }else if (response.user.role =='user') {
-                    navigate('/')
+                    navigate('/home')
                 }
                 toast.success(response.message)
                 dispatch(SetUser(response.user))
