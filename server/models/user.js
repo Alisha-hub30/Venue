@@ -20,6 +20,12 @@ const userSechmea = new mongoose.Schema(
       type: String,
       required: true,
     },
+    resetToken: {
+      type: String,
+    },
+    tokenExpiry: {
+      type: Date, 
+    },
   },
   { timestamps: true }
 );

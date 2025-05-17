@@ -8,12 +8,34 @@ export default function VendorDashboard() {
   const [services, setServices] = useState([]);
   const [newService, setNewService] = useState({
     title: '',
-    description: '',
-    price: '',
-    duration: '',
     category: '',
-    image: ''
+    location: '',
+    vendorName: '',
+    image: '',
+    shortDescription: '',
+    priceType: 'fixed',
+    basePrice: '',
+    priceUnit: '',
+    maxPrice: '',
+    discount: '',
+    email: '',
+    phone: '',
+    website: '',
+    socialMedia: {
+      instagram: '',
+      facebook: '',
+      youtube: '',
+      twitter: ''
+    },
+    fullDescription: '',
+    yearsInBusiness: '',
+    eventsCompleted: '',
+    teamSize: '',
+    servicesOffered: [],
+    portfolio: [],
+    comesWith: [], // New field for "What it Comes With"
   });
+  const [comesWithInput, setComesWithInput] = useState(""); // Input for adding individual items
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
@@ -35,7 +57,7 @@ export default function VendorDashboard() {
     try {
       const res = await axios.get('http://localhost:4000/api/vendor/services', { withCredentials: true });
       if (res.data && Array.isArray(res.data.services)) {
-        setServices(res.data.services);
+        setServices(res.data.services.filter(service => service.status === 'pending' || service.status === 'approved'));
       } else {
         setServices([]);
       }
@@ -53,20 +75,104 @@ export default function VendorDashboard() {
     setNewService({ ...newService, [e.target.name]: e.target.value });
   };
 
+  const handleServiceChange = (index, field, value) => {
+    const updatedServices = [...newService.servicesOffered];
+    updatedServices[index][field] = value;
+    setNewService({ ...newService, servicesOffered: updatedServices });
+  };
+
+  const handleAddService = () => {
+    setNewService({
+      ...newService,
+      servicesOffered: [...newService.servicesOffered, { name: '', description: '', price: '' }]
+    });
+  };
+
+  const handlePortfolioChange = (index, field, value) => {
+    const updatedPortfolio = [...newService.portfolio];
+    updatedPortfolio[index][field] = value;
+    setNewService({ ...newService, portfolio: updatedPortfolio });
+  };
+
+  const handleAddAlbum = () => {
+    setNewService({
+      ...newService,
+      portfolio: [...newService.portfolio, { title: '', images: [] }]
+    });
+  };
+
+  const handleAddComesWithItem = () => {
+    if (comesWithInput.trim() && newService.comesWith.length < 10) {
+        setNewService({
+            ...newService,
+            comesWith: [...newService.comesWith, comesWithInput.trim()],
+        });
+        setComesWithInput(""); // Clear the input field
+    } else if (newService.comesWith.length >= 10) {
+        setMessage("You can only add up to 10 items.");
+    }
+};
+
+const handleRemoveComesWithItem = (index) => {
+    const updatedComesWith = [...newService.comesWith];
+    updatedComesWith.splice(index, 1);
+    setNewService({ ...newService, comesWith: updatedComesWith });
+};
+
   // Add new service
-  const handleAddService = async (e) => {
+  const handleAddServiceSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post('http://localhost:4000/api/vendor/services', newService, { withCredentials: true });
+      const serviceData = { ...newService };
+
+      // Ensure required fields are not empty
+      if (!serviceData.title || !serviceData.category || !serviceData.location || !serviceData.vendorName || !serviceData.priceType || !serviceData.basePrice || !serviceData.shortDescription || !serviceData.fullDescription) {
+        setMessage("Please fill in all required fields.");
+        return;
+      }
+
+      // Ensure numeric fields are valid
+      if (isNaN(serviceData.basePrice) || (serviceData.priceType === 'range' && isNaN(serviceData.maxPrice))) {
+        setMessage("Please provide valid numeric values for price fields.");
+        return;
+      }
+
+      // Remove the image field if it's empty
+      if (!serviceData.image.trim()) {
+        delete serviceData.image;
+      }
+
+      const res = await axios.post('http://localhost:4000/api/vendor/services', serviceData, { withCredentials: true });
       setMessage(res.data.message || 'Service added successfully');
       fetchServices(); // Refresh the list
       setNewService({
         title: '',
-        description: '',
-        price: '',
-        duration: '',
         category: '',
-        image: ''
+        location: '',
+        vendorName: '',
+        image: '',
+        shortDescription: '',
+        priceType: 'fixed',
+        basePrice: '',
+        priceUnit: '',
+        maxPrice: '',
+        discount: '',
+        email: '',
+        phone: '',
+        website: '',
+        socialMedia: {
+          instagram: '',
+          facebook: '',
+          youtube: '',
+          twitter: ''
+        },
+        fullDescription: '',
+        yearsInBusiness: '',
+        eventsCompleted: '',
+        teamSize: '',
+        servicesOffered: [],
+        portfolio: [],
+        comesWith: [], // Resetting the comesWith field
       });
     } catch (err) {
       console.error(err);
@@ -167,61 +273,19 @@ export default function VendorDashboard() {
       {message && <p className="text-green-600 mb-4">{message}</p>}
 
       {/* Add New Service Form */}
-      <form onSubmit={isEditing ? handleUpdateService : handleAddService} className="bg-white p-4 rounded shadow mb-8 space-y-4">
+      <form onSubmit={isEditing ? handleUpdateService : handleAddServiceSubmit} className="bg-white p-4 rounded shadow mb-8 space-y-4">
         <h2 className="text-xl font-semibold">{isEditing ? 'Edit Service' : 'Add New Service'}</h2>
 
-        <input
-          type="text"
-          name="title"
-          placeholder="Title"
-          value={newService.title}
-          onChange={handleChange}
-          className="w-full border p-2 rounded"
-          required
-        />
-        <textarea
-          name="description"
-          placeholder="Description"
-          value={newService.description}
-          onChange={handleChange}
-          className="w-full border p-2 rounded"
-          required
-        />
-        <input
-          type="number"
-          name="price"
-          placeholder="Price"
-          value={newService.price}
-          onChange={handleChange}
-          className="w-full border p-2 rounded"
-          required
-        />
-        <input
-          type="number"
-          name="duration"
-          placeholder="Duration (minutes)"
-          value={newService.duration}
-          onChange={handleChange}
-          className="w-full border p-2 rounded"
-          required
-        />
-        
-        {/* Dropdown select for category instead of free text input */}
-        <select
-          name="category"
-          value={newService.category}
-          onChange={handleChange}
-          className="w-full border p-2 rounded"
-          required
-        >
+        {/* Basic Details */}
+        <input type="text" name="title" placeholder="Service Name" value={newService.title} onChange={handleChange} className="w-full border p-2 rounded" required />
+        <select name="category" value={newService.category} onChange={handleChange} className="w-full border p-2 rounded" required>
           <option value="">Select a Category</option>
           {serviceCategories.map((category) => (
-            <option key={category.value} value={category.value}>
-              {category.label}
-            </option>
+            <option key={category.value} value={category.value}>{category.label}</option>
           ))}
         </select>
-        
+        <input type="text" name="location" placeholder="Location/City" value={newService.location} onChange={handleChange} className="w-full border p-2 rounded" required />
+        <input type="text" name="vendorName" placeholder="Vendor Name/Business Name" value={newService.vendorName} onChange={handleChange} className="w-full border p-2 rounded" required />
         <input
           type="text"
           name="image"
@@ -230,15 +294,111 @@ export default function VendorDashboard() {
           onChange={handleChange}
           className="w-full border p-2 rounded"
         />
+        <textarea name="shortDescription" placeholder="Short Description (150 chars max)" maxLength="150" value={newService.shortDescription} onChange={handleChange} className="w-full border p-2 rounded" required />
+
+        {/* Pricing Information */}
+        <div>
+          <label>
+            <input type="radio" name="priceType" value="fixed" checked={newService.priceType === 'fixed'} onChange={handleChange} /> Fixed Price
+          </label>
+          <label>
+            <input type="radio" name="priceType" value="starting" checked={newService.priceType === 'starting'} onChange={handleChange} /> Starting From
+          </label>
+          <label>
+            <input type="radio" name="priceType" value="range" checked={newService.priceType === 'range'} onChange={handleChange} /> Price Range
+          </label>
+        </div>
+        <input type="number" name="basePrice" placeholder="Base Price" value={newService.basePrice} onChange={handleChange} className="w-full border p-2 rounded" required />
+        <select name="priceUnit" value={newService.priceUnit} onChange={handleChange} className="w-full border p-2 rounded">
+          <option value="">Select Price Unit</option>
+          <option value="perDay">Per Day</option>
+          <option value="perEvent">Per Event</option>
+          <option value="perHour">Per Hour</option>
+          <option value="perPerson">Per Person</option>
+        </select>
+        {newService.priceType === 'range' && (
+          <input type="number" name="maxPrice" placeholder="Maximum Price" value={newService.maxPrice} onChange={handleChange} className="w-full border p-2 rounded" required />
+        )}
+        <input type="number" name="discount" placeholder="Discount (optional)" value={newService.discount} onChange={handleChange} className="w-full border p-2 rounded" />
+
+        {/* Contact Information and Portfolio */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
+          <div className="border rounded-lg p-6">
+            <h3 className="text-lg font-semibold">Contact Information</h3>
+            <input type="email" name="email" placeholder="Email Address" value={newService.email} onChange={handleChange} className="w-full border p-2 rounded mt-2" required />
+            <input type="tel" name="phone" placeholder="Phone Number" value={newService.phone} onChange={handleChange} className="w-full border p-2 rounded mt-2" required />
+            <input type="url" name="website" placeholder="Website (optional)" value={newService.website} onChange={handleChange} className="w-full border p-2 rounded mt-2" />
+            <input type="url" name="socialMedia.instagram" placeholder="Instagram (optional)" value={newService.socialMedia.instagram} onChange={(e) => setNewService({ ...newService, socialMedia: { ...newService.socialMedia, instagram: e.target.value } })} className="w-full border p-2 rounded mt-2" />
+            <input type="url" name="socialMedia.facebook" placeholder="Facebook (optional)" value={newService.socialMedia.facebook} onChange={(e) => setNewService({ ...newService, socialMedia: { ...newService.socialMedia, facebook: e.target.value } })} className="w-full border p-2 rounded mt-2" />
+            <input type="url" name="socialMedia.youtube" placeholder="YouTube (optional)" value={newService.socialMedia.youtube} onChange={(e) => setNewService({ ...newService, socialMedia: { ...newService.socialMedia, youtube: e.target.value } })} className="w-full border p-2 rounded mt-2" />
+            <input type="url" name="socialMedia.twitter" placeholder="Twitter/X (optional)" value={newService.socialMedia.twitter} onChange={(e) => setNewService({ ...newService, socialMedia: { ...newService.socialMedia, twitter: e.target.value } })} className="w-full border p-2 rounded mt-2" />
+          </div>
+
+          <div className="border rounded-lg p-6">
+            <h3 className="text-lg font-semibold">Portfolio</h3>
+            {newService.portfolio.map((album, index) => (
+              <div key={index} className="space-y-2 mt-2">
+                <input type="text" placeholder="Album Title" value={album.title} onChange={(e) => handlePortfolioChange(index, 'title', e.target.value)} className="w-full border p-2 rounded" required />
+                <textarea
+                  placeholder="Image URLs (comma-separated)"
+                  value={album.images.join(', ')}
+                  onChange={(e) => handlePortfolioChange(index, 'images', e.target.value.split(',').map(url => url.trim()))}
+                  className="w-full border p-2 rounded"
+                />
+              </div>
+            ))}
+            <button type="button" onClick={handleAddAlbum} className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 mt-4">Add More Albums</button>
+          </div>
+        </div>
+
+        {/* Detailed Description */}
+        <textarea name="fullDescription" placeholder="Full Description" value={newService.fullDescription} onChange={handleChange} className="w-full border p-2 rounded" required />
+        <input type="number" name="yearsInBusiness" placeholder="Years in Business" value={newService.yearsInBusiness} onChange={handleChange} className="w-full border p-2 rounded" required />
+        <input type="number" name="eventsCompleted" placeholder="Number of Events Completed" value={newService.eventsCompleted} onChange={handleChange} className="w-full border p-2 rounded" required />
+        <input type="number" name="teamSize" placeholder="Team Size (optional)" value={newService.teamSize} onChange={handleChange} className="w-full border p-2 rounded" />
+
+        <div className="border rounded-lg p-6">
+          <h3 className="text-lg font-semibold">What it Comes With</h3>
+          <div className="flex items-center space-x-2 mb-4">
+            <input
+                type="text"
+                value={comesWithInput}
+                onChange={(e) => setComesWithInput(e.target.value)}
+                placeholder="Enter an item"
+                className="w-full border p-2 rounded"
+            />
+            <button
+                type="button"
+                onClick={handleAddComesWithItem}
+                className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
+            >
+                +
+            </button>
+          </div>
+          <ul className="list-disc list-inside text-gray-700 space-y-2">
+            {newService.comesWith.map((item, index) => (
+                <li key={index} className="flex items-center justify-between">
+                    <span>{item}</span>
+                    <button
+                        type="button"
+                        onClick={() => handleRemoveComesWithItem(index)}
+                        className="text-red-500 hover:text-red-700"
+                    >
+                        Remove
+                    </button>
+                </li>
+            ))}
+          </ul>
+          <p className="text-sm text-gray-500 mt-2">You can add up to 10 items.</p>
+      </div>
 
         <div className="flex gap-2">
           <button
             type="submit"
-            className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
+            className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
           >
             {isEditing ? 'Update Service' : 'Add Service'}
           </button>
-          
           {isEditing && (
             <button
               type="button"
@@ -260,22 +420,35 @@ export default function VendorDashboard() {
           {services.map((service) => (
             <div key={service._id} className="border p-4 rounded shadow">
               <h3 className="text-lg font-bold">{service.title}</h3>
-              <p>{service.description}</p>
               <p className="text-sm text-gray-600">
-                Category: {serviceCategories.find(cat => cat.value === service.category)?.label || service.category}
+                <strong>Category:</strong> {serviceCategories.find(cat => cat.value === service.category)?.label || service.category}
               </p>
-              <p className="text-sm">Price: ₹{service.price}</p>
-              <p className="text-sm">Duration: {service.duration} mins</p>
+              <p className="text-sm text-gray-600">
+                <strong>Location:</strong> {service.location}
+              </p>
+              <p className="text-sm text-gray-600">
+                <strong>Vendor Name:</strong> {service.vendorName}
+              </p>
+              <p className="text-sm text-gray-600">
+                <strong>Price:</strong> ₹{service.basePrice} {service.priceType === 'range' && `- ₹${service.maxPrice}`}
+              </p>
+              <p className="text-sm text-gray-600">
+                <strong>Discount:</strong> {service.discount ? `${service.discount}%` : 'N/A'}
+              </p>
+              <p className="text-sm text-gray-600">
+                <strong>Status:</strong> {service.status === 'approved' ? 'Approved' : service.status}
+              </p>
               <img
                 src={service.image || '/default-service.jpg'}
                 alt="Service"
                 className="w-full h-40 object-cover mt-2 rounded"
               />
+              <p className="text-sm mt-2">{service.shortDescription}</p>
 
               <div className="mt-2 flex gap-2">
                 <button
                   onClick={() => handleEditClick(service)}
-                  className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600"
+                  className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
                 >
                   Edit
                 </button>

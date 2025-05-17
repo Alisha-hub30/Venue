@@ -6,7 +6,9 @@ import AdminRoutes from "./routes/AdminRoutes.js";
 import AuthRoutes from "./routes/Auth.js";
 import userRoutes from "./routes/userRoutes.js";
 import vendorRoutes from "./routes/vendorRoues.js";
-import DbCon from "./utlis/db.js";
+import serviceRoutes from "./routes/serviceRoutes.js";
+
+import DbCon from "./utils/db.js";
 
 dotenv.config();
 const PORT = process.env.PORT || 3000;
@@ -27,6 +29,7 @@ app.use("/api/auth", AuthRoutes);
 app.use("/api/admin", AdminRoutes);
 app.use("/api/vendor", vendorRoutes);
 app.use("/api/user", userRoutes);
+app.use("/api/services", serviceRoutes);
 
 app.get("/", (req, res) => {
   res.send("test");

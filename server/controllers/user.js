@@ -4,10 +4,10 @@ import ServiceModel from "../models/service.js";
 // Get all available services
 const getAllServices = async (req, res) => {
   try {
+    let query = { isAvailable: true, status: "accepted" };
+
     // Allow filtering by category, price range
     const { category, minPrice, maxPrice } = req.query;
-
-    let query = { isAvailable: true };
 
     if (category) {
       query.category = category;

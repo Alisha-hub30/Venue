@@ -5,11 +5,16 @@ import UserModel from "../models/user.js";
 
 const getVendorDashboard = async (req, res) => {
   try {
-    // The vendor's user information is available in req.user thanks to the middleware
+    // Ensure req.user exists
+    if (!req.user) {
+      return res.status(401).json({
+        success: false,
+        message: "Unauthorized access. Vendor information is missing.",
+      });
+    }
+
     const vendor = req.user;
 
-    // For now, just return the vendor data
-    // In a real app, you'd likely include more vendor-specific data
     res.status(200).json({
       success: true,
       message: "Vendor dashboard data fetched successfully",
@@ -23,7 +28,7 @@ const getVendorDashboard = async (req, res) => {
     });
   } catch (error) {
     res.status(500).json({ success: false, message: "Internal server error" });
-    console.log(error);
+    console.log("Error in getVendorDashboard:", error);
   }
 };
 
@@ -62,33 +67,65 @@ const updateVendorProfile = async (req, res) => {
 
 const addService = async (req, res) => {
   try {
-    const { title, description, price, duration, category, image } = req.body;
+    const {
+      title,
+      category,
+      location,
+      vendorName,
+      priceType,
+      basePrice,
+      shortDescription,
+      fullDescription,
+      image,
+      comesWith, // New field
+    } = req.body;
+
+    // Validate required fields
+    if (!title || !category || !location || !vendorName || !priceType || !basePrice || !shortDescription || !fullDescription) {
+      return res.status(400).json({
+        success: false,
+        message: "Missing required fields. Please provide all necessary information.",
+      });
+    }
+
+    // Validate numeric fields
+    if (isNaN(basePrice) || (priceType === "range" && isNaN(req.body.maxPrice))) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid numeric values for price fields.",
+      });
+    }
+
+    // Validate comesWith array
+    if (comesWith && comesWith.length > 10) {
+      return res.status(400).json({
+        success: false,
+        message: "You can only add up to 10 items in 'What it comes with'.",
+      });
+    }
+
     const vendorId = req.user._id;
 
     const newService = new ServiceModel({
-      title,
-      description,
-      price,
-      duration,
-      category,
+      ...req.body,
+      image: image || "default-service.jpg", // Use default image if none is provided
       vendor: vendorId,
-      image: image || "default-service.jpg",
+      status: "pending", // Default status set to "pending"
     });
 
     await newService.save();
 
     res.status(201).json({
       success: true,
-      message: "Service added successfully",
+      message: "Service added successfully and is pending approval.",
       service: newService,
     });
   } catch (error) {
     res.status(500).json({ success: false, message: "Internal server error" });
-    console.log(error);
+    console.log("Error in addService:", error);
   }
 };
 
-// Get all services for a vendor
 const getVendorServices = async (req, res) => {
   try {
     const vendorId = req.user._id;
@@ -123,6 +160,14 @@ const updateService = async (req, res) => {
       return res.status(404).json({
         success: false,
         message: "Service not found or you don't have permission to update it",
+      });
+    }
+
+    // Validate comesWith array
+    if (updates.comesWith && updates.comesWith.length > 10) {
+      return res.status(400).json({
+        success: false,
+        message: "You can only add up to 10 items in 'What it comes with'.",
       });
     }
 

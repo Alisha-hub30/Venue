@@ -14,32 +14,23 @@ const Services = () => {
 useEffect(() => {
     const fetchServices = async () => {
         try {
-            console.log('Attempting to fetch services...');
-            // Use the vendor services endpoint since that's where your data is
-            const res = await axios.get('http://localhost:4000/api/vendor/services', {
+            const res = await axios.get('http://localhost:4000/api/services?status=approved', {
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json'
                 }
             });
-            console.log('Response received:', res);
-            
             if (res.data && Array.isArray(res.data.services)) {
                 setServices(res.data.services);
+                console.log('Fetched services:', res.data.services);
+                console.log(`Count of approved services: ${res.data.services.length}`);
             } else {
                 setServices([]);
             }
             setLoading(false);
         } catch (error) {
-            console.error('Failed to fetch services:', error);
-            if (error.response) {
-                console.error('Error response:', {
-                    data: error.response.data,
-                    status: error.response.status,
-                    headers: error.response.headers
-                });
-            }
             setError('Failed to load services. Please try again later.');
+            console.error("Error fetching services:", error);
             setLoading(false);
         }
     };
@@ -47,27 +38,44 @@ useEffect(() => {
     fetchServices();
 }, []);
 
-    // Function to count services in a category
-    const getServiceCountByCategory = (category) => {
-        // Handle case insensitive comparison and variations
-        const normalizedCategory = category.toLowerCase();
-        return services.filter(service => {
-          const serviceCategory = service.category.toLowerCase();
-          
-          // Handle potential variations (add more mappings as needed)
-          if (normalizedCategory === 'photography' && 
-              (serviceCategory === 'photography' || serviceCategory === 'photo' || serviceCategory === 'videography')) {
+const getServiceCountByCategory = (category) => {
+    const normalizedCategory = category.toLowerCase();
+    return services.filter(service => {
+        const serviceCategory = service.category.toLowerCase();
+
+        // Handle potential variations in category names
+        if (normalizedCategory === 'photography' && 
+            (serviceCategory === 'photography' || serviceCategory === 'photo' || serviceCategory === 'videography')) {
             return true;
-          }
-          if (normalizedCategory === 'venue' && 
-              (serviceCategory === 'venue' || serviceCategory === 'banquet' || serviceCategory === 'party palace')) {
+        }
+        if (normalizedCategory === 'venue' && 
+            (serviceCategory === 'venue' || serviceCategory === 'banquet' || serviceCategory === 'party palace')) {
             return true;
-          }
-          // Add more mappings for other categories as needed
-          
-          return serviceCategory === normalizedCategory;
-        }).length;
-      };
+        }
+        if (normalizedCategory === 'makeup' && 
+            (serviceCategory === 'makeup' || serviceCategory === 'bridal makeup')) {
+            return true;
+        }
+        if (normalizedCategory === 'clothing' && 
+            (serviceCategory === 'clothing' || serviceCategory === 'bridal lehenga' || serviceCategory === 'groom suit')) {
+            return true;
+        }
+        if (normalizedCategory === 'music' && 
+            (serviceCategory === 'music' || serviceCategory === 'baja')) {
+            return true;
+        }
+        if (normalizedCategory === 'decorations' && 
+            (serviceCategory === 'decorations' || serviceCategory === 'stage' || serviceCategory === 'mandap')) {
+            return true;
+        }
+        if (normalizedCategory === 'cards' && 
+            (serviceCategory === 'cards' || serviceCategory === 'invitation cards')) {
+            return true;
+        }
+
+        return serviceCategory === normalizedCategory;
+    }).length;
+};
 
     // Function to navigate to category detail page with filtered services
     const navigateToCategory = (category) => {
