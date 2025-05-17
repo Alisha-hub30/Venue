@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { Toaster } from 'react-hot-toast';
 import { useDispatch } from 'react-redux';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
@@ -13,22 +13,25 @@ import NavBar from './components/Navbar';
 import ProtectedRoute from './components/ProtectedRoute';
 
 // Pages
+import About from './pages/About';
 import Admin from './pages/Admin';
 import Bookings from './pages/Booking';
 import CategoryServices from './pages/CategoryServices';
+import ForgotPassword from './pages/ForgotPassword';
 import Home from './pages/Home';
 import LandingPage from './pages/Landingpage';
 import Login from './pages/Login';
 import Register from './pages/Register';
-import RegisterVendor from './pages/VendorRegister';
-import Services from './pages/Services';
+import ResetPassword from './pages/ResetPassword';
 import ServiceDetails from './pages/ServiceDetails';
+import Services from './pages/Services';
 import Unauthorized from './pages/Unauthorized';
 import VendorDashboard from './pages/VendorDashboard';
-import ForgotPassword from './pages/ForgotPassword';
-import ResetPassword from './pages/ResetPassword'; 
+import RegisterVendor from './pages/VendorRegister';
 
 // Redux
+import Footer from './components/Footer';
+import ContactUs from './pages/Contact';
 import { updateUser } from './redux/AuthSlice';
 
 export default function App() {
@@ -88,6 +91,9 @@ export default function App() {
             <Route path="servicedetails" element={<ServiceDetails />} />
             <Route path="forgot-password" element={<ForgotPassword />} />
             <Route path="reset-password/:token" element={<ResetPassword />} />
+            <Route path="/footer" element={<Footer/>}/>
+            <Route path="/about" element={<About/>}/>
+            <Route path="/contact" element={<ContactUs/>}/>
           </Route>
 
           {/* Public or Shared Routes */}

@@ -1,20 +1,41 @@
-import React from 'react';
 import { useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import Footer from '../components/Footer';
 import NavBar from '../components/Navbar';
 
-// Service Item Component
-const ServiceItem = ({ title, description }) => {
+// Enhanced Service Card Component - Rectangular style
+const ServiceCard = ({ title, description, bgColor, imageUrl, category }) => {
+  const navigate = useNavigate();
+  
+  const handleClick = () => {
+    // Navigate to category-services page with selected category
+    navigate('/category-services', { 
+      state: { 
+        category: category || title.toLowerCase().replace(' »', '') 
+      } 
+    });
+  };
+  
   return (
-    <div className="border-b border-gray-200 pb-6">
-      <h3 className="text-xl font-semibold text-gray-800 mb-2">{title}</h3>
-      <p className="text-gray-600">{description}</p>
+    <div 
+      className="rounded-md overflow-hidden shadow-lg relative group cursor-pointer h-40"
+      onClick={handleClick}
+    >
+      <div className="absolute inset-0" style={{ backgroundColor: bgColor }}></div>
+      <div className="absolute top-0 right-0 h-full w-2/5">
+        <img src={imageUrl || "/api/placeholder/240/160"} alt={title} className="h-full w-full object-cover" />
+      </div>
+      <div className="relative z-10 h-full p-6 flex flex-col justify-center w-3/5">
+        <h3 className="text-2xl font-bold text-white mb-1">{title}</h3>
+        <p className="text-white/90 italic">{description}</p>
+      </div>
     </div>
   );
 };
 
 export default function LandingPage() {
     const user = useSelector((state) => state.Auth?.user) || null;
+    const navigate = useNavigate();
     
     return (
         <div className="min-h-screen bg-white">
@@ -44,14 +65,17 @@ export default function LandingPage() {
                 Check prices, get verified ratings, and chat back-and-forth by the vendors to seal your deal 
                 to completion.
                 </p>
-                <button className="px-6 py-3 bg-rose-600 text-white font-medium rounded hover:bg-rose-700 transition duration-300">
-                Learn More About Us
+                <button 
+                  onClick={() => navigate('/about')}
+                  className="px-6 py-3 bg-rose-600 text-white font-medium rounded hover:bg-rose-700 transition duration-300"
+                >
+                  Learn More About Us
                 </button>
             </div>
             <div className="rounded-lg overflow-hidden shadow-xl">
                 {/* Using placeholder image instead of external URL */}
                 <img 
-                src="/api/placeholder/1000/600" 
+                src="/public/LandingPhoto.jpg" 
                 alt="Wedding venue" 
                 className="w-full h-auto object-cover"
                 />
@@ -59,9 +83,9 @@ export default function LandingPage() {
             </div>
         </div>
 
-        {/* Services Section */}
+        {/* Services Section with Visual Cards */}
         <div className="bg-white py-16 px-4 sm:px-6 lg:px-8">
-          <div className="max-w-4xl mx-auto">
+          <div className="max-w-7xl mx-auto">
             {/* Header Section */}
             <div className="text-center mb-12">
               <h1 className="text-3xl font-bold text-gray-900 mb-2">Our Services</h1>
@@ -70,98 +94,86 @@ export default function LandingPage() {
               </p>
             </div>
 
-            {/* Services List - Two Column Layout */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
-              {/* Column 1 */}
-              <div className="space-y-6">
-                <ServiceItem 
-                  title="Photography & Videography" 
-                  description="Photography and Videography" 
-                />
-                <ServiceItem 
-                  title="Making" 
-                  description="Bridal Makeup & Family Makeup" 
-                />
-                <ServiceItem 
-                  title="Clothing" 
-                  description="Bridal Lahenga, Saree, Groom Suit" 
-                />
-                <ServiceItem 
-                  title="Venue" 
-                  description="Banquet, Party Palace, Hotel, Restaurant" 
-                />
-              </div>
+            {/* Services Grid - Using reusable rectangular service cards */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+              <ServiceCard 
+                title="Photography & Videography" 
+                description="Photography and Videography" 
+                bgColor="#8B5A2B"
+                imageUrl="\public\videograpgy.jpeg" 
+                category="photography"
+              />
+              
+              <ServiceCard 
+                title="Makeup »" 
+                description="Bridal Makeup & Family Makeup" 
+                bgColor="#C53030"
+                imageUrl="\public\makeup.jpeg" 
+                category="makeup"
+              />
+              
+              <ServiceCard 
+                title="Clothing »" 
+                description="Bridal Lehenga, Saree, Groom Suit" 
+                bgColor="#E53E3E"
+                imageUrl="\public\clothes.jpeg" 
+                category="clothing"
+              />
+              
+              <ServiceCard 
+                title="Venue »" 
+                description="Banquet, Party Palace, Hotel, Restaurant" 
+                bgColor="#2B4162"
+                imageUrl="\public\venue.jpeg" 
+                category="venue"
+              />
+              
+              <ServiceCard 
+                title="Baja (Music) »" 
+                description="Feel Music Around You" 
+                bgColor="#4B7F52"
+                imageUrl="\public\baja.jpeg" 
+                category="music"
+              />
+              
+              <ServiceCard 
+                title="Decorations »" 
+                description="Stage, Mehendi, Mandap" 
+                bgColor="#D1CBC1"
+                imageUrl="\public\decoration.jpeg" 
+                category="decorations"
+              />
+              
+              <ServiceCard 
+                title="Invitation Cards »" 
+                description="Wedding Cards" 
+                bgColor="#8B6B23"
+                imageUrl="\public\Card.jpeg" 
+                category="cards"
+              />
 
-              {/* Column 2 */}
-              <div className="space-y-6">
-                <ServiceItem 
-                  title="Baja (Music)" 
-                  description="Feel Music Around You" 
-                />
-                <ServiceItem 
-                  title="Decorations" 
-                  description="Stage, Mehendi, Mandap" 
-                />
-                <ServiceItem 
-                  title="Invitation Cards" 
-                  description="Wedding Cards" 
-                />
-              </div>
+              <ServiceCard 
+                title="Event Planner »" 
+                description="Professional Event Coordinators" 
+                bgColor="#8B6B23"
+                imageUrl="\public\planer.jpeg" 
+                category="planners"
+              />
             </div>
 
             {/* View All Button */}
             <div className="text-center">
-              <button className="px-8 py-3 bg-rose-600 text-white font-medium rounded-md hover:bg-rose-700 transition-colors duration-300">
+              <button 
+                onClick={() => navigate('/services')}
+                className="px-8 py-3 bg-rose-600 text-white font-medium rounded-md hover:bg-rose-700 transition-colors duration-300"
+              >
                 View All Services
               </button>
             </div>
           </div>
         </div>
 
-        {/* Footer */}
-        <footer className="bg-gray-800 text-white py-12">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-                <div>
-                <h3 className="text-xl font-bold mb-4">VENUE</h3>
-                <p className="text-gray-400">Creating unforgettable wedding experiences in Nepal.</p>
-                </div>
-                <div>
-                <h4 className="font-semibold mb-4">Quick Links</h4>
-                <ul className="space-y-2">
-                    <li><Link to="/" className="text-gray-400 hover:text-white">Home</Link></li>
-                    <li><Link to="/about" className="text-gray-400 hover:text-white">About</Link></li>
-                    <li><Link to="/services" className="text-gray-400 hover:text-white">Services</Link></li>
-                    <li><Link to="/contact" className="text-gray-400 hover:text-white">Contact</Link></li>
-                </ul>
-                </div>
-                <div>
-                <h4 className="font-semibold mb-4">Contact Us</h4>
-                <address className="text-gray-400 not-italic">
-                    <p>Kathmandu, Nepal</p>
-                    <p>Email: info@venue.com</p>
-                    <p>Phone: +977 1234567890</p>
-                </address>
-                </div>
-                <div>
-                <h4 className="font-semibold mb-4">Newsletter</h4>
-                <div className="flex">
-                    <input 
-                    type="email" 
-                    placeholder="Your email" 
-                    className="px-4 py-2 w-full rounded-l text-gray-800"
-                    />
-                    <button className="bg-rose-600 px-4 py-2 rounded-r hover:bg-rose-700">
-                    Subscribe
-                    </button>
-                </div>
-                </div>
-            </div>
-            <div className="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
-                <p>&copy; {new Date().getFullYear()} VENUE. All rights reserved.</p>
-            </div>
-            </div>
-        </footer>
+        <Footer/>
         </div>
     );
 }
