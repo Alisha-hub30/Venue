@@ -4,9 +4,9 @@ import dotenv from "dotenv";
 import express from "express";
 import AdminRoutes from "./routes/AdminRoutes.js";
 import AuthRoutes from "./routes/Auth.js";
+import serviceRoutes from "./routes/serviceRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import vendorRoutes from "./routes/vendorRoues.js";
-import serviceRoutes from "./routes/serviceRoutes.js";
 
 import DbCon from "./utils/db.js";
 

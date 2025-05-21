@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { toast } from "react-hot-toast";
 import { useNavigate } from 'react-router-dom';
 import Footer from '../components/Footer';
 import NavBar from '../components/Navbar';
@@ -20,21 +21,36 @@ const ContactUs = () => {
         });
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        // Handle form submission logic here
-        console.log('Form submitted:', formData);
-        // Optionally reset form after submission
-        setFormData({
-        fullName: '',
-        email: '',
-        contactNo: '',
-        mobileNo: '',
-        message: ''
-        });
-        // You could also show a success message
-        alert('Your message has been sent successfully!');
-    };
+        try {
+            const response = await fetch('/api/admin/contact', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(formData),
+            });
+
+            const data = await response.json();
+            
+            if (response.ok) {
+            toast.success('Your message has been sent successfully!');
+            setFormData({
+                fullName: '',
+                email: '',
+                contactNo: '',
+                mobileNo: '',
+                message: ''
+            });
+            } else {
+            toast.error(data.message || 'Failed to send message');
+            }
+        } catch (error) {
+            console.error('Error submitting form:', error);
+            toast.error('Failed to send message');
+        }
+        };
 
     return (
         <div className="flex flex-col min-h-screen bg-white">

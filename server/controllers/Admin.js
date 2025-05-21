@@ -1,5 +1,5 @@
-import UserModel from "../models/user.js";
 import ServiceModel from "../models/service.js";
+import UserModel from "../models/user.js";
 
 // Get all users
 const Getuser = async (req, res) => {
@@ -52,11 +52,15 @@ const deleteVendor = async (req, res) => {
     const vendor = await UserModel.findById(vendorId);
 
     if (!vendor) {
-      return res.status(404).json({ success: false, message: "Vendor not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "Vendor not found" });
     }
 
     if (vendor.role !== "vendor") {
-      return res.status(400).json({ success: false, message: "User is not a vendor" });
+      return res
+        .status(400)
+        .json({ success: false, message: "User is not a vendor" });
     }
 
     const deletedVendor = await UserModel.findByIdAndDelete(vendorId);
@@ -80,19 +84,28 @@ const updateServiceStatus = async (req, res) => {
     if (!["pending", "approved"].includes(status)) {
       return res.status(400).json({
         success: false,
-        message: "Invalid status value. Only 'pending' and 'approved' are allowed.",
+        message:
+          "Invalid status value. Only 'pending' and 'approved' are allowed.",
       });
     }
 
     const service = await ServiceModel.findById(serviceId);
     if (!service) {
-      return res.status(404).json({ success: false, message: "Service not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "Service not found" });
     }
 
     service.status = status;
     await service.save();
 
-    res.status(200).json({ success: true, message: "Service status updated successfully", service });
+    res
+      .status(200)
+      .json({
+        success: true,
+        message: "Service status updated successfully",
+        service,
+      });
   } catch (error) {
     res.status(500).json({ success: false, message: "Internal server error" });
     console.log(error);
@@ -127,12 +140,121 @@ const deleteService = async (req, res) => {
   }
 };
 
+import ContactModel from "../models/contact.js";
+
+// Submit contact form
+const submitContactForm = async (req, res) => {
+  try {
+    const { fullName, email, contactNo, mobileNo, message } = req.body;
+
+    const newContact = new ContactModel({
+      fullName,
+      email,
+      contactNo,
+      mobileNo,
+      message,
+    });
+
+    await newContact.save();
+
+    res.status(201).json({
+      success: true,
+      message: "Thank you for contacting us!",
+      contact: newContact,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Failed to submit contact form",
+    });
+    console.log(error);
+  }
+};
+
+// Get all contact submissions
+const getContactSubmissions = async (req, res) => {
+  try {
+    const submissions = await ContactModel.find().sort({ createdAt: -1 });
+    res.status(200).json({
+      success: true,
+      submissions,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch contact submissions",
+    });
+    console.log(error);
+  }
+};
+
+// Update submission status
+const updateSubmissionStatus = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const submission = await ContactModel.findByIdAndUpdate(
+      id,
+      { status: "read" },
+      { new: true }
+    );
+
+    if (!submission) {
+      return res.status(404).json({
+        success: false,
+        message: "Submission not found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Submission marked as read",
+      submission,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Failed to update submission status",
+    });
+    console.log(error);
+  }
+};
+
+// Delete contact submission
+const deleteContactSubmission = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const deleted = await ContactModel.findByIdAndDelete(id);
+
+    if (!deleted) {
+      return res.status(404).json({
+        success: false,
+        message: "Submission not found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Submission deleted successfully",
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Failed to delete submission",
+    });
+    console.log(error);
+  }
+};
+
 export {
+  deleteContactSubmission,
+  deleteService,
   deleteUser,
   deleteVendor,
+  getAllServicesForAdmin,
+  getContactSubmissions,
   Getuser,
   GetVendors,
+  submitContactForm,
   updateServiceStatus,
-  getAllServicesForAdmin,
-  deleteService,
+  updateSubmissionStatus,
 };

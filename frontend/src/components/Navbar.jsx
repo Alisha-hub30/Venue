@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
-import { Logout } from '../redux/AuthSlice';
+import { Logout } from '../redux/AuthSlice.js';
 import { post } from '../services/ApiEndpints';
 
 export default function NavBar() {
@@ -10,19 +10,19 @@ export default function NavBar() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  // Handle logout logic
   const handleLogout = async () => {
-    try {
-      const request = await post('/api/auth/logout');
-      if (request.status === 200) {
-        dispatch(Logout());
-        setIsMenuOpen(false); // Close menu after logout
-        navigate('/'); // Navigate to the home page after logout
-      }
-    } catch (error) {
-      console.log(error);
+  try {
+    const request = await post('/api/auth/logout');
+    if (request.status === 200) {
+      dispatch(Logout()); // This should now work
+      localStorage.removeItem('token'); // Clear token if using localStorage
+      setIsMenuOpen(false);
+      navigate('/');
     }
-  };
+  } catch (error) {
+    console.log(error);
+  }
+};
 
   // Handle dashboard navigation logic
   const handleDashboardClick = () => {

@@ -100,7 +100,7 @@ export default function LandingPage() {
                 title="Photography & Videography" 
                 description="Photography and Videography" 
                 bgColor="#8B5A2B"
-                imageUrl="\public\videograpgy.jpeg" 
+                imageUrl="\videograpgy.jpeg" 
                 category="photography"
               />
               
@@ -108,7 +108,7 @@ export default function LandingPage() {
                 title="Makeup »" 
                 description="Bridal Makeup & Family Makeup" 
                 bgColor="#C53030"
-                imageUrl="\public\makeup.jpeg" 
+                imageUrl="\makeup.jpeg" 
                 category="makeup"
               />
               
@@ -116,7 +116,7 @@ export default function LandingPage() {
                 title="Clothing »" 
                 description="Bridal Lehenga, Saree, Groom Suit" 
                 bgColor="#E53E3E"
-                imageUrl="\public\clothes.jpeg" 
+                imageUrl="\clothes.jpeg" 
                 category="clothing"
               />
               
@@ -124,7 +124,7 @@ export default function LandingPage() {
                 title="Venue »" 
                 description="Banquet, Party Palace, Hotel, Restaurant" 
                 bgColor="#2B4162"
-                imageUrl="\public\venue.jpeg" 
+                imageUrl="\venue.jpeg" 
                 category="venue"
               />
               
@@ -132,7 +132,7 @@ export default function LandingPage() {
                 title="Baja (Music) »" 
                 description="Feel Music Around You" 
                 bgColor="#4B7F52"
-                imageUrl="\public\baja.jpeg" 
+                imageUrl="\baja.jpeg" 
                 category="music"
               />
               
@@ -140,7 +140,7 @@ export default function LandingPage() {
                 title="Decorations »" 
                 description="Stage, Mehendi, Mandap" 
                 bgColor="#D1CBC1"
-                imageUrl="\public\decoration.jpeg" 
+                imageUrl="\decoration.jpeg" 
                 category="decorations"
               />
               
@@ -148,7 +148,7 @@ export default function LandingPage() {
                 title="Invitation Cards »" 
                 description="Wedding Cards" 
                 bgColor="#8B6B23"
-                imageUrl="\public\Card.jpeg" 
+                imageUrl="\Card.jpeg" 
                 category="cards"
               />
 
@@ -156,7 +156,7 @@ export default function LandingPage() {
                 title="Event Planner »" 
                 description="Professional Event Coordinators" 
                 bgColor="#8B6B23"
-                imageUrl="\public\planer.jpeg" 
+                imageUrl="\planer.jpeg" 
                 category="planners"
               />
             </div>
