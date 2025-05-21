@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import NavBar from '../components/Navbar';
 
@@ -20,7 +20,6 @@ export default function VendorDashboard() {
     discount: '',
     email: '',
     phone: '',
-    website: '',
     socialMedia: {
       instagram: '',
       facebook: '',
@@ -32,7 +31,6 @@ export default function VendorDashboard() {
     eventsCompleted: '',
     teamSize: '',
     servicesOffered: [],
-    portfolio: [],
     comesWith: [], // New field for "What it Comes With"
   });
   const [comesWithInput, setComesWithInput] = useState(""); // Input for adding individual items
@@ -49,7 +47,8 @@ export default function VendorDashboard() {
     { value: 'venue', label: 'Venue' },
     { value: 'music', label: 'Baja (Music)' },
     { value: 'decorations', label: 'Decorations' },
-    { value: 'cards', label: 'Invitation Cards' }
+    { value: 'cards', label: 'Invitation Cards' },
+    { value: 'eventplanner', label: 'Event Planner' }
   ];
 
   // Fetch services of the vendor
@@ -89,16 +88,11 @@ export default function VendorDashboard() {
   };
 
   const handlePortfolioChange = (index, field, value) => {
-    const updatedPortfolio = [...newService.portfolio];
-    updatedPortfolio[index][field] = value;
-    setNewService({ ...newService, portfolio: updatedPortfolio });
+    // Removed as we're no longer using portfolio
   };
 
   const handleAddAlbum = () => {
-    setNewService({
-      ...newService,
-      portfolio: [...newService.portfolio, { title: '', images: [] }]
-    });
+    // Removed as we're no longer using portfolio
   };
 
   const handleAddComesWithItem = () => {
@@ -159,7 +153,6 @@ const handleRemoveComesWithItem = (index) => {
         discount: '',
         email: '',
         phone: '',
-        website: '',
         socialMedia: {
           instagram: '',
           facebook: '',
@@ -171,7 +164,6 @@ const handleRemoveComesWithItem = (index) => {
         eventsCompleted: '',
         teamSize: '',
         servicesOffered: [],
-        portfolio: [],
         comesWith: [], // Resetting the comesWith field
       });
     } catch (err) {
@@ -321,33 +313,47 @@ const handleRemoveComesWithItem = (index) => {
         )}
         <input type="number" name="discount" placeholder="Discount (optional)" value={newService.discount} onChange={handleChange} className="w-full border p-2 rounded" />
 
-        {/* Contact Information and Portfolio */}
+        {/* Contact Information */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
           <div className="border rounded-lg p-6">
             <h3 className="text-lg font-semibold">Contact Information</h3>
             <input type="email" name="email" placeholder="Email Address" value={newService.email} onChange={handleChange} className="w-full border p-2 rounded mt-2" required />
             <input type="tel" name="phone" placeholder="Phone Number" value={newService.phone} onChange={handleChange} className="w-full border p-2 rounded mt-2" required />
-            <input type="url" name="website" placeholder="Website (optional)" value={newService.website} onChange={handleChange} className="w-full border p-2 rounded mt-2" />
-            <input type="url" name="socialMedia.instagram" placeholder="Instagram (optional)" value={newService.socialMedia.instagram} onChange={(e) => setNewService({ ...newService, socialMedia: { ...newService.socialMedia, instagram: e.target.value } })} className="w-full border p-2 rounded mt-2" />
-            <input type="url" name="socialMedia.facebook" placeholder="Facebook (optional)" value={newService.socialMedia.facebook} onChange={(e) => setNewService({ ...newService, socialMedia: { ...newService.socialMedia, facebook: e.target.value } })} className="w-full border p-2 rounded mt-2" />
-            <input type="url" name="socialMedia.youtube" placeholder="YouTube (optional)" value={newService.socialMedia.youtube} onChange={(e) => setNewService({ ...newService, socialMedia: { ...newService.socialMedia, youtube: e.target.value } })} className="w-full border p-2 rounded mt-2" />
-            <input type="url" name="socialMedia.twitter" placeholder="Twitter/X (optional)" value={newService.socialMedia.twitter} onChange={(e) => setNewService({ ...newService, socialMedia: { ...newService.socialMedia, twitter: e.target.value } })} className="w-full border p-2 rounded mt-2" />
           </div>
 
           <div className="border rounded-lg p-6">
-            <h3 className="text-lg font-semibold">Portfolio</h3>
-            {newService.portfolio.map((album, index) => (
-              <div key={index} className="space-y-2 mt-2">
-                <input type="text" placeholder="Album Title" value={album.title} onChange={(e) => handlePortfolioChange(index, 'title', e.target.value)} className="w-full border p-2 rounded" required />
-                <textarea
-                  placeholder="Image URLs (comma-separated)"
-                  value={album.images.join(', ')}
-                  onChange={(e) => handlePortfolioChange(index, 'images', e.target.value.split(',').map(url => url.trim()))}
+            <h3 className="text-lg font-semibold">What it Comes With</h3>
+            <div className="flex items-center space-x-2 mb-4">
+              <input
+                  type="text"
+                  value={comesWithInput}
+                  onChange={(e) => setComesWithInput(e.target.value)}
+                  placeholder="Enter an item"
                   className="w-full border p-2 rounded"
-                />
-              </div>
-            ))}
-            <button type="button" onClick={handleAddAlbum} className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 mt-4">Add More Albums</button>
+              />
+              <button
+                  type="button"
+                  onClick={handleAddComesWithItem}
+                  className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
+              >
+                  +
+              </button>
+            </div>
+            <ul className="list-disc list-inside text-gray-700 space-y-2">
+              {newService.comesWith.map((item, index) => (
+                  <li key={index} className="flex items-center justify-between">
+                      <span>{item}</span>
+                      <button
+                          type="button"
+                          onClick={() => handleRemoveComesWithItem(index)}
+                          className="text-red-500 hover:text-red-700"
+                      >
+                          Remove
+                      </button>
+                  </li>
+              ))}
+            </ul>
+            <p className="text-sm text-gray-500 mt-2">You can add up to 10 items.</p>
           </div>
         </div>
 
@@ -356,41 +362,6 @@ const handleRemoveComesWithItem = (index) => {
         <input type="number" name="yearsInBusiness" placeholder="Years in Business" value={newService.yearsInBusiness} onChange={handleChange} className="w-full border p-2 rounded" required />
         <input type="number" name="eventsCompleted" placeholder="Number of Events Completed" value={newService.eventsCompleted} onChange={handleChange} className="w-full border p-2 rounded" required />
         <input type="number" name="teamSize" placeholder="Team Size (optional)" value={newService.teamSize} onChange={handleChange} className="w-full border p-2 rounded" />
-
-        <div className="border rounded-lg p-6">
-          <h3 className="text-lg font-semibold">What it Comes With</h3>
-          <div className="flex items-center space-x-2 mb-4">
-            <input
-                type="text"
-                value={comesWithInput}
-                onChange={(e) => setComesWithInput(e.target.value)}
-                placeholder="Enter an item"
-                className="w-full border p-2 rounded"
-            />
-            <button
-                type="button"
-                onClick={handleAddComesWithItem}
-                className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
-            >
-                +
-            </button>
-          </div>
-          <ul className="list-disc list-inside text-gray-700 space-y-2">
-            {newService.comesWith.map((item, index) => (
-                <li key={index} className="flex items-center justify-between">
-                    <span>{item}</span>
-                    <button
-                        type="button"
-                        onClick={() => handleRemoveComesWithItem(index)}
-                        className="text-red-500 hover:text-red-700"
-                    >
-                        Remove
-                    </button>
-                </li>
-            ))}
-          </ul>
-          <p className="text-sm text-gray-500 mt-2">You can add up to 10 items.</p>
-      </div>
 
         <div className="flex gap-2">
           <button

@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import { useEffect, useState } from 'react';
+import { toast } from 'react-hot-toast';
 import { useLocation } from 'react-router-dom';
 import Navbar from '../components/Navbar';
-import axios from 'axios';
-import { toast } from 'react-hot-toast';
 
 const ServiceDetails = () => {
   const location = useLocation();

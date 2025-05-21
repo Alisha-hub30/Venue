@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import NavBar from '../components/Navbar';
-import axios from 'axios';
 
 const CategoryServices = () => {
   const location = useLocation();

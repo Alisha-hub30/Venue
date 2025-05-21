@@ -1,3 +1,4 @@
+import axios from 'axios';
 import { useState } from 'react';
 import { toast } from "react-hot-toast";
 import { useNavigate } from 'react-router-dom';
@@ -6,6 +7,7 @@ import NavBar from '../components/Navbar';
 
 const ContactUs = () => {
     const navigate = useNavigate();
+    const [isSubmitting, setIsSubmitting] = useState(false);
     const [formData, setFormData] = useState({
         fullName: '',
         email: '',
@@ -23,34 +25,41 @@ const ContactUs = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        
+        if (isSubmitting) return; // Prevent multiple submissions
+        setIsSubmitting(true);
+        
         try {
-            const response = await fetch('/api/admin/contact', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(formData),
-            });
+            const response = await axios.post(
+                'http://localhost:4000/api/admin/contact', 
+                formData,
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                }
+            );
 
-            const data = await response.json();
-            
-            if (response.ok) {
-            toast.success('Your message has been sent successfully!');
-            setFormData({
-                fullName: '',
-                email: '',
-                contactNo: '',
-                mobileNo: '',
-                message: ''
-            });
+            if (response.data.success) {
+                toast.success('Your message has been sent successfully!');
+                // Reset the form
+                setFormData({
+                    fullName: '',
+                    email: '',
+                    contactNo: '',
+                    mobileNo: '',
+                    message: ''
+                });
             } else {
-            toast.error(data.message || 'Failed to send message');
+                toast.error(response.data.message || 'Failed to send message');
             }
         } catch (error) {
             console.error('Error submitting form:', error);
-            toast.error('Failed to send message');
+            toast.error('Failed to send message. Please try again later.');
+        } finally {
+            setIsSubmitting(false);
         }
-        };
+    };
 
     return (
         <div className="flex flex-col min-h-screen bg-white">
@@ -188,9 +197,12 @@ const ContactUs = () => {
                 ></textarea>
                 <button
                     type="submit"
-                    className="py-3 px-8 bg-rose-600 border border-gray-300 rounded hover:bg-rose-900 transition duration-300 font-medium"
+                    disabled={isSubmitting}
+                    className={`py-3 px-8 bg-rose-600 border border-gray-300 rounded transition duration-300 font-medium text-white ${
+                        isSubmitting ? 'opacity-70 cursor-not-allowed' : 'hover:bg-rose-900'
+                    }`}
                 >
-                    SUBMIT
+                    {isSubmitting ? 'SUBMITTING...' : 'SUBMIT'}
                 </button>
                 </form>
             </div>

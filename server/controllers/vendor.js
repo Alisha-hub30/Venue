@@ -81,15 +81,28 @@ const addService = async (req, res) => {
     } = req.body;
 
     // Validate required fields
-    if (!title || !category || !location || !vendorName || !priceType || !basePrice || !shortDescription || !fullDescription) {
+    if (
+      !title ||
+      !category ||
+      !location ||
+      !vendorName ||
+      !priceType ||
+      !basePrice ||
+      !shortDescription ||
+      !fullDescription
+    ) {
       return res.status(400).json({
         success: false,
-        message: "Missing required fields. Please provide all necessary information.",
+        message:
+          "Missing required fields. Please provide all necessary information.",
       });
     }
 
     // Validate numeric fields
-    if (isNaN(basePrice) || (priceType === "range" && isNaN(req.body.maxPrice))) {
+    if (
+      isNaN(basePrice) ||
+      (priceType === "range" && isNaN(req.body.maxPrice))
+    ) {
       return res.status(400).json({
         success: false,
         message: "Invalid numeric values for price fields.",
