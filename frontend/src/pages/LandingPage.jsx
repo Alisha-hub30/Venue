@@ -75,7 +75,7 @@ export default function LandingPage() {
             <div className="rounded-lg overflow-hidden shadow-xl">
                 {/* Using placeholder image instead of external URL */}
                 <img 
-                src="/public/LandingPhoto.jpg" 
+                src="/LandingPhoto.jpg" 
                 alt="Wedding venue" 
                 className="w-full h-auto object-cover"
                 />

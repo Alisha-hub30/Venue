@@ -31,15 +31,16 @@ export default function VendorDashboard() {
     eventsCompleted: '',
     teamSize: '',
     servicesOffered: [],
-    comesWith: [], // New field for "What it Comes With"
+    comesWith: [], 
   });
-  const [comesWithInput, setComesWithInput] = useState(""); // Input for adding individual items
+  const [comesWithInput, setComesWithInput] = useState(""); 
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
   const [editServiceId, setEditServiceId] = useState(null);
+  const [previewImage, setPreviewImage] = useState('');
 
-  // Predefined categories that match exactly with what the Services.jsx expects
+  
   const serviceCategories = [
     { value: 'photography', label: 'Photography & Videography' },
     { value: 'makeup', label: 'Makeup' },
@@ -63,15 +64,54 @@ export default function VendorDashboard() {
     } catch (error) {
       console.error('Failed to fetch vendor services:', error);
       setServices([]);
-      setMessage('Please login as a vendor to view your dashboard.');
+      setMessage('Failed to fetch services. Please try again.');
     } finally {
       setLoading(false);
     }
   };
 
+  // Validate image URL
+  const validateImageUrl = (url) => {
+    if (!url || url.trim() === '') return false;
+    
+    try {
+      new URL(url);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  };
+
+  // Handle image URL input change
+  const handleImageUrlChange = (e) => {
+    const url = e.target.value;
+    setNewService({ ...newService, image: url });
+    
+    // Set preview image if URL is valid
+    if (validateImageUrl(url)) {
+      setPreviewImage(url);
+    } else {
+      setPreviewImage('');
+    }
+  };
+
   // Handle input changes
   const handleChange = (e) => {
-    setNewService({ ...newService, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    
+    // Handle social media inputs
+    if (name.startsWith('social_')) {
+      const platform = name.split('_')[1];
+      setNewService({
+        ...newService,
+        socialMedia: {
+          ...newService.socialMedia,
+          [platform]: value
+        }
+      });
+    } else {
+      setNewService({ ...newService, [name]: value });
+    }
   };
 
   const handleServiceChange = (index, field, value) => {
@@ -87,35 +127,29 @@ export default function VendorDashboard() {
     });
   };
 
-  const handlePortfolioChange = (index, field, value) => {
-    // Removed as we're no longer using portfolio
-  };
-
-  const handleAddAlbum = () => {
-    // Removed as we're no longer using portfolio
-  };
-
   const handleAddComesWithItem = () => {
     if (comesWithInput.trim() && newService.comesWith.length < 10) {
-        setNewService({
-            ...newService,
-            comesWith: [...newService.comesWith, comesWithInput.trim()],
-        });
-        setComesWithInput(""); // Clear the input field
+      setNewService({
+        ...newService,
+        comesWith: [...newService.comesWith, comesWithInput.trim()],
+      });
+      setComesWithInput(""); // Clear the input field
     } else if (newService.comesWith.length >= 10) {
-        setMessage("You can only add up to 10 items.");
+      setMessage("You can only add up to 10 items.");
     }
-};
+  };
 
-const handleRemoveComesWithItem = (index) => {
+  const handleRemoveComesWithItem = (index) => {
     const updatedComesWith = [...newService.comesWith];
     updatedComesWith.splice(index, 1);
     setNewService({ ...newService, comesWith: updatedComesWith });
-};
+  };
 
   // Add new service
   const handleAddServiceSubmit = async (e) => {
     e.preventDefault();
+    setMessage('');
+    
     try {
       const serviceData = { ...newService };
 
@@ -131,14 +165,17 @@ const handleRemoveComesWithItem = (index) => {
         return;
       }
 
-      // Remove the image field if it's empty
-      if (!serviceData.image.trim()) {
-        delete serviceData.image;
+      // Validate image URL if provided
+      if (serviceData.image.trim() && !validateImageUrl(serviceData.image)) {
+        setMessage("Please provide a valid image URL or leave it empty.");
+        return;
       }
 
       const res = await axios.post('http://localhost:4000/api/vendor/services', serviceData, { withCredentials: true });
       setMessage(res.data.message || 'Service added successfully');
       fetchServices(); // Refresh the list
+      
+      // Reset form
       setNewService({
         title: '',
         category: '',
@@ -164,8 +201,9 @@ const handleRemoveComesWithItem = (index) => {
         eventsCompleted: '',
         teamSize: '',
         servicesOffered: [],
-        comesWith: [], // Resetting the comesWith field
+        comesWith: [],
       });
+      setPreviewImage('');
     } catch (err) {
       console.error(err);
       setMessage(err.response?.data?.message || 'Something went wrong');
@@ -176,33 +214,85 @@ const handleRemoveComesWithItem = (index) => {
   const handleEditClick = (service) => {
     setIsEditing(true);
     setEditServiceId(service._id);
+    
+
     setNewService({
-      title: service.title,
-      description: service.description,
-      price: service.price,
-      duration: service.duration,
-      category: service.category,
-      image: service.image
+      title: service.title || '',
+      category: service.category || '',
+      location: service.location || '',
+      vendorName: service.vendorName || '',
+      image: service.image || '',
+      shortDescription: service.shortDescription || '',
+      priceType: service.priceType || 'fixed',
+      basePrice: service.basePrice || '',
+      priceUnit: service.priceUnit || '',
+      maxPrice: service.maxPrice || '',
+      discount: service.discount || '',
+      email: service.email || '',
+      phone: service.phone || '',
+      socialMedia: service.socialMedia || {
+        instagram: '',
+        facebook: '',
+        youtube: '',
+        twitter: ''
+      },
+      fullDescription: service.fullDescription || '',
+      yearsInBusiness: service.yearsInBusiness || '',
+      eventsCompleted: service.eventsCompleted || '',
+      teamSize: service.teamSize || '',
+      servicesOffered: service.servicesOffered || [],
+      comesWith: service.comesWith || [],
     });
+    
+    setPreviewImage(service.image || '');
   };
 
   // Update service
   const handleUpdateService = async (e) => {
     e.preventDefault();
+    setMessage('');
+    
     try {
+      if (newService.image.trim() && !validateImageUrl(newService.image)) {
+        setMessage("Please provide a valid image URL or leave it empty.");
+        return;
+      }
+      
       const res = await axios.put(`http://localhost:4000/api/vendor/services/${editServiceId}`, newService, { withCredentials: true });
       setMessage(res.data.message || 'Service updated successfully');
       setIsEditing(false);
       setEditServiceId(null);
       fetchServices(); // Refresh the list
+      
+      // Reset form
       setNewService({
         title: '',
-        description: '',
-        price: '',
-        duration: '',
         category: '',
-        image: ''
+        location: '',
+        vendorName: '',
+        image: '',
+        shortDescription: '',
+        priceType: 'fixed',
+        basePrice: '',
+        priceUnit: '',
+        maxPrice: '',
+        discount: '',
+        email: '',
+        phone: '',
+        socialMedia: {
+          instagram: '',
+          facebook: '',
+          youtube: '',
+          twitter: ''
+        },
+        fullDescription: '',
+        yearsInBusiness: '',
+        eventsCompleted: '',
+        teamSize: '',
+        servicesOffered: [],
+        comesWith: [],
       });
+      setPreviewImage('');
     } catch (err) {
       console.error(err);
       setMessage(err.response?.data?.message || 'Something went wrong');
@@ -215,12 +305,32 @@ const handleRemoveComesWithItem = (index) => {
     setEditServiceId(null);
     setNewService({
       title: '',
-      description: '',
-      price: '',
-      duration: '',
       category: '',
-      image: ''
+      location: '',
+      vendorName: '',
+      image: '',
+      shortDescription: '',
+      priceType: 'fixed',
+      basePrice: '',
+      priceUnit: '',
+      maxPrice: '',
+      discount: '',
+      email: '',
+      phone: '',
+      socialMedia: {
+        instagram: '',
+        facebook: '',
+        youtube: '',
+        twitter: ''
+      },
+      fullDescription: '',
+      yearsInBusiness: '',
+      eventsCompleted: '',
+      teamSize: '',
+      servicesOffered: [],
+      comesWith: [],
     });
+    setPreviewImage('');
   };
 
   // Delete service
@@ -262,7 +372,7 @@ const handleRemoveComesWithItem = (index) => {
       <NavBar/>
       <h1 className="text-2xl font-bold mb-4">Vendor Dashboard</h1>
 
-      {message && <p className="text-green-600 mb-4">{message}</p>}
+      {message && <p className={`${message.includes('successfully') ? 'text-green-600' : 'text-red-600'} mb-4`}>{message}</p>}
 
       {/* Add New Service Form */}
       <form onSubmit={isEditing ? handleUpdateService : handleAddServiceSubmit} className="bg-white p-4 rounded shadow mb-8 space-y-4">
@@ -278,36 +388,62 @@ const handleRemoveComesWithItem = (index) => {
         </select>
         <input type="text" name="location" placeholder="Location/City" value={newService.location} onChange={handleChange} className="w-full border p-2 rounded" required />
         <input type="text" name="vendorName" placeholder="Vendor Name/Business Name" value={newService.vendorName} onChange={handleChange} className="w-full border p-2 rounded" required />
-        <input
-          type="text"
-          name="image"
-          placeholder="Image URL (optional)"
-          value={newService.image}
-          onChange={handleChange}
-          className="w-full border p-2 rounded"
-        />
+        
+        {/* Image URL with preview */}
+        <div>
+          <input
+            type="text"
+            name="image"
+            placeholder="Image URL (optional)"
+            value={newService.image}
+            onChange={handleImageUrlChange}
+            className="w-full border p-2 rounded"
+          />
+          {previewImage && (
+            <div className="mt-2">
+              <p className="text-sm text-gray-600 mb-1">Image Preview:</p>
+              <div className="w-full h-48 relative border rounded overflow-hidden">
+                <img 
+                  src={previewImage} 
+                  alt="Service Preview" 
+                  className="w-full h-full object-cover"
+                  onError={(e) => {
+                    e.target.onerror = null;
+                    e.target.src = 'public\LandingPhoto.jpg'
+                    setMessage("Image couldn't be loaded. Please check the URL.");
+                  }}
+                />
+              </div>
+            </div>
+          )}
+        </div>
+        
         <textarea name="shortDescription" placeholder="Short Description (150 chars max)" maxLength="150" value={newService.shortDescription} onChange={handleChange} className="w-full border p-2 rounded" required />
 
         {/* Pricing Information */}
-        <div>
-          <label>
-            <input type="radio" name="priceType" value="fixed" checked={newService.priceType === 'fixed'} onChange={handleChange} /> Fixed Price
+        <div className="space-x-4">
+          <label className="inline-flex items-center">
+            <input type="radio" name="priceType" value="fixed" checked={newService.priceType === 'fixed'} onChange={handleChange} className="mr-1" /> Fixed Price
           </label>
-          <label>
-            <input type="radio" name="priceType" value="starting" checked={newService.priceType === 'starting'} onChange={handleChange} /> Starting From
+          <label className="inline-flex items-center">
+            <input type="radio" name="priceType" value="starting" checked={newService.priceType === 'starting'} onChange={handleChange} className="mr-1" /> Starting From
           </label>
-          <label>
-            <input type="radio" name="priceType" value="range" checked={newService.priceType === 'range'} onChange={handleChange} /> Price Range
+          <label className="inline-flex items-center">
+            <input type="radio" name="priceType" value="range" checked={newService.priceType === 'range'} onChange={handleChange} className="mr-1" /> Price Range
           </label>
         </div>
-        <input type="number" name="basePrice" placeholder="Base Price" value={newService.basePrice} onChange={handleChange} className="w-full border p-2 rounded" required />
-        <select name="priceUnit" value={newService.priceUnit} onChange={handleChange} className="w-full border p-2 rounded">
-          <option value="">Select Price Unit</option>
-          <option value="perDay">Per Day</option>
-          <option value="perEvent">Per Event</option>
-          <option value="perHour">Per Hour</option>
-          <option value="perPerson">Per Person</option>
-        </select>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <input type="number" name="basePrice" placeholder="Base Price" value={newService.basePrice} onChange={handleChange} className="w-full border p-2 rounded" required />
+          <select name="priceUnit" value={newService.priceUnit} onChange={handleChange} className="w-full border p-2 rounded">
+            <option value="">Select Price Unit</option>
+            <option value="perDay">Per Day</option>
+            <option value="perEvent">Per Event</option>
+            <option value="perHour">Per Hour</option>
+            <option value="perPerson">Per Person</option>
+          </select>
+        </div>
+        
         {newService.priceType === 'range' && (
           <input type="number" name="maxPrice" placeholder="Maximum Price" value={newService.maxPrice} onChange={handleChange} className="w-full border p-2 rounded" required />
         )}
@@ -319,49 +455,84 @@ const handleRemoveComesWithItem = (index) => {
             <h3 className="text-lg font-semibold">Contact Information</h3>
             <input type="email" name="email" placeholder="Email Address" value={newService.email} onChange={handleChange} className="w-full border p-2 rounded mt-2" required />
             <input type="tel" name="phone" placeholder="Phone Number" value={newService.phone} onChange={handleChange} className="w-full border p-2 rounded mt-2" required />
+            
+            {/* Social Media Links */}
+            <div className="mt-4">
+              <h4 className="text-md font-semibold mb-2">Social Media (Optional)</h4>
+              <input 
+                type="text" 
+                name="social_instagram" 
+                placeholder="Instagram URL" 
+                value={newService.socialMedia.instagram} 
+                onChange={handleChange} 
+                className="w-full border p-2 rounded mt-2" 
+              />
+              <input 
+                type="text" 
+                name="social_facebook" 
+                placeholder="Facebook URL" 
+                value={newService.socialMedia.facebook} 
+                onChange={handleChange} 
+                className="w-full border p-2 rounded mt-2" 
+              />
+            </div>
           </div>
 
           <div className="border rounded-lg p-6">
             <h3 className="text-lg font-semibold">What it Comes With</h3>
             <div className="flex items-center space-x-2 mb-4">
               <input
-                  type="text"
-                  value={comesWithInput}
-                  onChange={(e) => setComesWithInput(e.target.value)}
-                  placeholder="Enter an item"
-                  className="w-full border p-2 rounded"
+                type="text"
+                value={comesWithInput}
+                onChange={(e) => setComesWithInput(e.target.value)}
+                placeholder="Enter an item"
+                className="w-full border p-2 rounded"
               />
               <button
-                  type="button"
-                  onClick={handleAddComesWithItem}
-                  className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
+                type="button"
+                onClick={handleAddComesWithItem}
+                className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
               >
-                  +
+                +
               </button>
             </div>
-            <ul className="list-disc list-inside text-gray-700 space-y-2">
-              {newService.comesWith.map((item, index) => (
+            {newService.comesWith.length > 0 ? (
+              <ul className="list-disc list-inside text-gray-700 space-y-2">
+                {newService.comesWith.map((item, index) => (
                   <li key={index} className="flex items-center justify-between">
-                      <span>{item}</span>
-                      <button
-                          type="button"
-                          onClick={() => handleRemoveComesWithItem(index)}
-                          className="text-red-500 hover:text-red-700"
-                      >
-                          Remove
-                      </button>
+                    <span>{item}</span>
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveComesWithItem(index)}
+                      className="text-red-500 hover:text-red-700"
+                    >
+                      Remove
+                    </button>
                   </li>
-              ))}
-            </ul>
+                ))}
+              </ul>
+            ) : (
+              <p className="text-sm text-gray-500">No items added yet.</p>
+            )}
             <p className="text-sm text-gray-500 mt-2">You can add up to 10 items.</p>
           </div>
         </div>
 
         {/* Detailed Description */}
-        <textarea name="fullDescription" placeholder="Full Description" value={newService.fullDescription} onChange={handleChange} className="w-full border p-2 rounded" required />
-        <input type="number" name="yearsInBusiness" placeholder="Years in Business" value={newService.yearsInBusiness} onChange={handleChange} className="w-full border p-2 rounded" required />
-        <input type="number" name="eventsCompleted" placeholder="Number of Events Completed" value={newService.eventsCompleted} onChange={handleChange} className="w-full border p-2 rounded" required />
-        <input type="number" name="teamSize" placeholder="Team Size (optional)" value={newService.teamSize} onChange={handleChange} className="w-full border p-2 rounded" />
+        <textarea 
+          name="fullDescription" 
+          placeholder="Full Description" 
+          value={newService.fullDescription} 
+          onChange={handleChange} 
+          className="w-full border p-2 rounded h-32" 
+          required 
+        />
+        
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <input type="number" name="yearsInBusiness" placeholder="Years in Business" value={newService.yearsInBusiness} onChange={handleChange} className="w-full border p-2 rounded" required />
+          <input type="number" name="eventsCompleted" placeholder="Number of Events Completed" value={newService.eventsCompleted} onChange={handleChange} className="w-full border p-2 rounded" required />
+          <input type="number" name="teamSize" placeholder="Team Size (optional)" value={newService.teamSize} onChange={handleChange} className="w-full border p-2 rounded" />
+        </div>
 
         <div className="flex gap-2">
           <button
@@ -391,35 +562,48 @@ const handleRemoveComesWithItem = (index) => {
           {services.map((service) => (
             <div key={service._id} className="border p-4 rounded shadow">
               <h3 className="text-lg font-bold">{service.title}</h3>
-              <p className="text-sm text-gray-600">
-                <strong>Category:</strong> {serviceCategories.find(cat => cat.value === service.category)?.label || service.category}
-              </p>
-              <p className="text-sm text-gray-600">
-                <strong>Location:</strong> {service.location}
-              </p>
-              <p className="text-sm text-gray-600">
-                <strong>Vendor Name:</strong> {service.vendorName}
-              </p>
-              <p className="text-sm text-gray-600">
-                <strong>Price:</strong> ₹{service.basePrice} {service.priceType === 'range' && `- ₹${service.maxPrice}`}
-              </p>
-              <p className="text-sm text-gray-600">
-                <strong>Discount:</strong> {service.discount ? `${service.discount}%` : 'N/A'}
-              </p>
-              <p className="text-sm text-gray-600">
-                <strong>Status:</strong> {service.status === 'approved' ? 'Approved' : service.status}
-              </p>
-              <img
-                src={service.image || '/default-service.jpg'}
-                alt="Service"
-                className="w-full h-40 object-cover mt-2 rounded"
-              />
+              <div className="grid grid-cols-2 gap-2">
+                <div>
+                  <p className="text-sm text-gray-600">
+                    <strong>Category:</strong> {serviceCategories.find(cat => cat.value === service.category)?.label || service.category}
+                  </p>
+                  <p className="text-sm text-gray-600">
+                    <strong>Location:</strong> {service.location}
+                  </p>
+                  <p className="text-sm text-gray-600">
+                    <strong>Vendor Name:</strong> {service.vendorName}
+                  </p>
+                  <p className="text-sm text-gray-600">
+                    <strong>Price:</strong> ₹{service.basePrice} {service.priceType === 'range' && `- ₹${service.maxPrice}`}
+                    {service.priceUnit && ` (${service.priceUnit.replace('per', 'per ')}) `}
+                  </p>
+                  <p className="text-sm text-gray-600">
+                    <strong>Discount:</strong> {service.discount ? `${service.discount}%` : 'N/A'}
+                  </p>
+                  <p className="text-sm text-gray-600">
+                    <strong>Status:</strong> <span className={`font-semibold ${service.status === 'approved' ? 'text-green-600' : 'text-yellow-600'}`}>
+                      {service.status === 'approved' ? 'Approved' : 'Pending'}
+                    </span>
+                  </p>
+                </div>
+                <div className="relative h-32 w-full overflow-hidden rounded">
+                  <img
+                    src={validateImageUrl(service.image) ? service.image : '/default-service.jpg'}
+                    alt={service.title}
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      e.target.onerror = null;
+                      e.target.src = '/default-service.jpg';
+                    }}
+                  />
+                </div>
+              </div>
               <p className="text-sm mt-2">{service.shortDescription}</p>
 
-              <div className="mt-2 flex gap-2">
+              <div className="mt-4 flex gap-2">
                 <button
                   onClick={() => handleEditClick(service)}
-                  className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
+                  className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600"
                 >
                   Edit
                 </button>

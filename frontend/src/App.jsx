@@ -36,9 +36,12 @@ import { updateUser } from './redux/AuthSlice';
 
 export default function App() {
   const dispatch = useDispatch();
+  console.log(window.location.pathname)
 
   useEffect(() => {
-    dispatch(updateUser());
+    if(window.location.pathname !== '/login'){
+      dispatch(updateUser());
+    }
   }, [dispatch]);
 
   return (
