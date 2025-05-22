@@ -81,11 +81,11 @@ const updateServiceStatus = async (req, res) => {
     const serviceId = req.params.id;
     const { status } = req.body;
 
-    if (!["pending", "approved"].includes(status)) {
+    if (!["pending", "approved", "rejected"].includes(status)) {
       return res.status(400).json({
         success: false,
         message:
-          "Invalid status value. Only 'pending' and 'approved' are allowed.",
+          "Invalid status value. Only 'pending' and 'approved' and 'rejected' are allowed.",
       });
     }
 
@@ -99,13 +99,11 @@ const updateServiceStatus = async (req, res) => {
     service.status = status;
     await service.save();
 
-    res
-      .status(200)
-      .json({
-        success: true,
-        message: "Service status updated successfully",
-        service,
-      });
+    res.status(200).json({
+      success: true,
+      message: "Service status updated successfully",
+      service,
+    });
   } catch (error) {
     res.status(500).json({ success: false, message: "Internal server error" });
     console.log(error);
@@ -115,7 +113,10 @@ const updateServiceStatus = async (req, res) => {
 // Get all services (admin view)
 const getAllServicesForAdmin = async (req, res) => {
   try {
-    const services = await ServiceModel.find().populate("vendor", "name email");
+    const services = await ServiceModel.find().populate(
+      "vendor",
+      "name email phone location category price discount"
+    );
     res.status(200).json({ success: true, services });
   } catch (error) {
     res.status(500).json({ success: false, message: "Internal server error" });

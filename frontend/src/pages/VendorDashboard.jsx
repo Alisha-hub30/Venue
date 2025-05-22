@@ -20,12 +20,6 @@ export default function VendorDashboard() {
     discount: '',
     email: '',
     phone: '',
-    socialMedia: {
-      instagram: '',
-      facebook: '',
-      youtube: '',
-      twitter: ''
-    },
     fullDescription: '',
     yearsInBusiness: '',
     eventsCompleted: '',
@@ -57,7 +51,7 @@ export default function VendorDashboard() {
     try {
       const res = await axios.get('http://localhost:4000/api/vendor/services', { withCredentials: true });
       if (res.data && Array.isArray(res.data.services)) {
-        setServices(res.data.services.filter(service => service.status === 'pending' || service.status === 'approved'));
+        setServices(res.data.services.filter(service => service.status === 'pending' || service.status === 'approved' || service.status === "rejected"));
       } else {
         setServices([]);
       }
@@ -190,12 +184,6 @@ export default function VendorDashboard() {
         discount: '',
         email: '',
         phone: '',
-        socialMedia: {
-          instagram: '',
-          facebook: '',
-          youtube: '',
-          twitter: ''
-        },
         fullDescription: '',
         yearsInBusiness: '',
         eventsCompleted: '',
@@ -230,12 +218,6 @@ export default function VendorDashboard() {
       discount: service.discount || '',
       email: service.email || '',
       phone: service.phone || '',
-      socialMedia: service.socialMedia || {
-        instagram: '',
-        facebook: '',
-        youtube: '',
-        twitter: ''
-      },
       fullDescription: service.fullDescription || '',
       yearsInBusiness: service.yearsInBusiness || '',
       eventsCompleted: service.eventsCompleted || '',
@@ -279,12 +261,6 @@ export default function VendorDashboard() {
         discount: '',
         email: '',
         phone: '',
-        socialMedia: {
-          instagram: '',
-          facebook: '',
-          youtube: '',
-          twitter: ''
-        },
         fullDescription: '',
         yearsInBusiness: '',
         eventsCompleted: '',
@@ -317,12 +293,6 @@ export default function VendorDashboard() {
       discount: '',
       email: '',
       phone: '',
-      socialMedia: {
-        instagram: '',
-        facebook: '',
-        youtube: '',
-        twitter: ''
-      },
       fullDescription: '',
       yearsInBusiness: '',
       eventsCompleted: '',
@@ -455,27 +425,6 @@ export default function VendorDashboard() {
             <h3 className="text-lg font-semibold">Contact Information</h3>
             <input type="email" name="email" placeholder="Email Address" value={newService.email} onChange={handleChange} className="w-full border p-2 rounded mt-2" required />
             <input type="tel" name="phone" placeholder="Phone Number" value={newService.phone} onChange={handleChange} className="w-full border p-2 rounded mt-2" required />
-            
-            {/* Social Media Links */}
-            <div className="mt-4">
-              <h4 className="text-md font-semibold mb-2">Social Media (Optional)</h4>
-              <input 
-                type="text" 
-                name="social_instagram" 
-                placeholder="Instagram URL" 
-                value={newService.socialMedia.instagram} 
-                onChange={handleChange} 
-                className="w-full border p-2 rounded mt-2" 
-              />
-              <input 
-                type="text" 
-                name="social_facebook" 
-                placeholder="Facebook URL" 
-                value={newService.socialMedia.facebook} 
-                onChange={handleChange} 
-                className="w-full border p-2 rounded mt-2" 
-              />
-            </div>
           </div>
 
           <div className="border rounded-lg p-6">
@@ -581,8 +530,21 @@ export default function VendorDashboard() {
                     <strong>Discount:</strong> {service.discount ? `${service.discount}%` : 'N/A'}
                   </p>
                   <p className="text-sm text-gray-600">
-                    <strong>Status:</strong> <span className={`font-semibold ${service.status === 'approved' ? 'text-green-600' : 'text-yellow-600'}`}>
-                      {service.status === 'approved' ? 'Approved' : 'Pending'}
+                    <strong>Status:</strong>{" "}
+                    <span
+                      className={`font-semibold ${
+                        service.status === "approved"
+                          ? "text-green-600"
+                          : service.status === "rejected"
+                          ? "text-red-600"
+                          : "text-yellow-600"
+                      }`}
+                    >
+                      {service.status === "approved"
+                        ? "Approved"
+                        : service.status === "rejected"
+                        ? "Rejected"
+                        : "Pending"}
                     </span>
                   </p>
                 </div>
