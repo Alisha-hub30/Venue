@@ -5,7 +5,6 @@ import UserModel from "../models/user.js";
 
 const getVendorDashboard = async (req, res) => {
   try {
-    // Ensure req.user exists
     if (!req.user) {
       return res.status(401).json({
         success: false,
@@ -13,55 +12,84 @@ const getVendorDashboard = async (req, res) => {
       });
     }
 
-    const vendor = req.user;
+    const vendorId = req.user._id;
+
+    // Get counts for dashboard statistics
+    const [
+      servicesCount,
+      bookingsCount,
+      pendingBookingsCount,
+      completedBookingsCount,
+    ] = await Promise.all([
+      ServiceModel.countDocuments({ vendor: vendorId }),
+      BookingModel.countDocuments({ vendor: vendorId }),
+      BookingModel.countDocuments({ vendor: vendorId, status: "pending" }),
+      BookingModel.countDocuments({ vendor: vendorId, status: "completed" }),
+    ]);
 
     res.status(200).json({
       success: true,
       message: "Vendor dashboard data fetched successfully",
-      vendor: {
-        id: vendor._id,
-        name: vendor.name,
-        email: vendor.email,
-        role: vendor.role,
-        createdAt: vendor.createdAt,
+      data: {
+        vendor: {
+          id: req.user._id,
+          name: req.user.name,
+          email: req.user.email,
+          role: req.user.role,
+          createdAt: req.user.createdAt,
+        },
+        statistics: {
+          totalServices: servicesCount,
+          totalBookings: bookingsCount,
+          pendingBookings: pendingBookingsCount,
+          completedBookings: completedBookingsCount,
+        },
       },
     });
   } catch (error) {
-    res.status(500).json({ success: false, message: "Internal server error" });
-    console.log("Error in getVendorDashboard:", error);
+    console.error("Error in getVendorDashboard:", error);
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+      error: error.message,
+    });
   }
 };
 
 const updateVendorProfile = async (req, res) => {
   try {
-    const { name } = req.body;
+    const { name, phone, description } = req.body;
     const vendorId = req.user._id;
 
     const updatedVendor = await UserModel.findByIdAndUpdate(
       vendorId,
-      { name },
-      { new: true }
+      {
+        name,
+        phone,
+        description,
+      },
+      { new: true, select: "-password" }
     );
 
     if (!updatedVendor) {
-      return res
-        .status(404)
-        .json({ success: false, message: "Vendor not found" });
+      return res.status(404).json({
+        success: false,
+        message: "Vendor not found",
+      });
     }
 
     res.status(200).json({
       success: true,
       message: "Vendor profile updated successfully",
-      vendor: {
-        id: updatedVendor._id,
-        name: updatedVendor.name,
-        email: updatedVendor.email,
-        role: updatedVendor.role,
-      },
+      vendor: updatedVendor,
     });
   } catch (error) {
-    res.status(500).json({ success: false, message: "Internal server error" });
-    console.log(error);
+    console.error("Error in updateVendorProfile:", error);
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+      error: error.message,
+    });
   }
 };
 
@@ -77,32 +105,39 @@ const addService = async (req, res) => {
       shortDescription,
       fullDescription,
       image,
-      comesWith, // New field
+      comesWith,
+      servicesOffered,
+      priceUnit,
+      maxPrice,
+      discount,
+      yearsInBusiness,
+      eventsCompleted,
+      teamSize,
     } = req.body;
 
     // Validate required fields
-    if (
-      !title ||
-      !category ||
-      !location ||
-      !vendorName ||
-      !priceType ||
-      !basePrice ||
-      !shortDescription ||
-      !fullDescription
-    ) {
+    const requiredFields = [
+      "title",
+      "category",
+      "location",
+      "vendorName",
+      "priceType",
+      "basePrice",
+      "shortDescription",
+      "fullDescription",
+    ];
+
+    const missingFields = requiredFields.filter((field) => !req.body[field]);
+
+    if (missingFields.length > 0) {
       return res.status(400).json({
         success: false,
-        message:
-          "Missing required fields. Please provide all necessary information.",
+        message: `Missing required fields: ${missingFields.join(", ")}`,
       });
     }
 
     // Validate numeric fields
-    if (
-      isNaN(basePrice) ||
-      (priceType === "range" && isNaN(req.body.maxPrice))
-    ) {
+    if (isNaN(basePrice) || (priceType === "range" && isNaN(maxPrice))) {
       return res.status(400).json({
         success: false,
         message: "Invalid numeric values for price fields.",
@@ -120,10 +155,25 @@ const addService = async (req, res) => {
     const vendorId = req.user._id;
 
     const newService = new ServiceModel({
-      ...req.body,
-      image: image || "default-service.jpg", // Use default image if none is provided
+      title,
+      category,
+      location,
+      vendorName,
+      priceType,
+      basePrice,
+      shortDescription,
+      fullDescription,
+      image: image || "default-service.jpg",
+      comesWith: comesWith || [],
+      servicesOffered: servicesOffered || [],
+      priceUnit,
+      maxPrice: priceType === "range" ? maxPrice : undefined,
+      discount,
+      yearsInBusiness,
+      eventsCompleted,
+      teamSize,
       vendor: vendorId,
-      status: "pending", // Default status set to "pending"
+      status: "pending",
     });
 
     await newService.save();
@@ -134,16 +184,26 @@ const addService = async (req, res) => {
       service: newService,
     });
   } catch (error) {
-    res.status(500).json({ success: false, message: "Internal server error" });
-    console.log("Error in addService:", error);
+    console.error("Error in addService:", error);
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+      error: error.message,
+    });
   }
 };
 
 const getVendorServices = async (req, res) => {
   try {
     const vendorId = req.user._id;
+    const { status } = req.query;
 
-    const services = await ServiceModel.find({ vendor: vendorId });
+    const filter = { vendor: vendorId };
+    if (status) {
+      filter.status = status;
+    }
+
+    const services = await ServiceModel.find(filter).sort({ createdAt: -1 });
 
     res.status(200).json({
       success: true,
@@ -151,12 +211,15 @@ const getVendorServices = async (req, res) => {
       services,
     });
   } catch (error) {
-    res.status(500).json({ success: false, message: "Internal server error" });
-    console.log(error);
+    console.error("Error in getVendorServices:", error);
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+      error: error.message,
+    });
   }
 };
 
-// Update a service
 const updateService = async (req, res) => {
   try {
     const serviceId = req.params.id;
@@ -176,6 +239,14 @@ const updateService = async (req, res) => {
       });
     }
 
+    // Don't allow changing status directly (should have separate endpoint for approval)
+    if (updates.status && updates.status !== service.status) {
+      return res.status(400).json({
+        success: false,
+        message: "Cannot manually change service status",
+      });
+    }
+
     // Validate comesWith array
     if (updates.comesWith && updates.comesWith.length > 10) {
       return res.status(400).json({
@@ -183,6 +254,10 @@ const updateService = async (req, res) => {
         message: "You can only add up to 10 items in 'What it comes with'.",
       });
     }
+
+    // Don't allow changing vendor or vendorName
+    delete updates.vendor;
+    delete updates.vendorName;
 
     const updatedService = await ServiceModel.findByIdAndUpdate(
       serviceId,
@@ -196,12 +271,15 @@ const updateService = async (req, res) => {
       service: updatedService,
     });
   } catch (error) {
-    res.status(500).json({ success: false, message: "Internal server error" });
-    console.log(error);
+    console.error("Error in updateService:", error);
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+      error: error.message,
+    });
   }
 };
 
-// Delete a service
 const deleteService = async (req, res) => {
   try {
     const serviceId = req.params.id;
@@ -230,6 +308,7 @@ const deleteService = async (req, res) => {
       return res.status(400).json({
         success: false,
         message: "Cannot delete service with active bookings",
+        activeBookingsCount: activeBookings.length,
       });
     }
 
@@ -240,19 +319,35 @@ const deleteService = async (req, res) => {
       message: "Service deleted successfully",
     });
   } catch (error) {
-    res.status(500).json({ success: false, message: "Internal server error" });
-    console.log(error);
+    console.error("Error in deleteService:", error);
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+      error: error.message,
+    });
   }
 };
 
-// Get vendor bookings
 const getVendorBookings = async (req, res) => {
   try {
     const vendorId = req.user._id;
+    const { status } = req.query;
 
-    const bookings = await BookingModel.find({ vendor: vendorId })
-      .populate("service")
-      .populate("user", "name email");
+    const filter = { vendor: vendorId };
+    if (status) {
+      filter.status = status;
+    }
+
+    const bookings = await BookingModel.find(filter)
+      .populate({
+        path: "service",
+        select: "title image basePrice",
+      })
+      .populate({
+        path: "user",
+        select: "name email phone",
+      })
+      .sort({ bookingDate: -1, createdAt: -1 });
 
     res.status(200).json({
       success: true,
@@ -260,12 +355,15 @@ const getVendorBookings = async (req, res) => {
       bookings,
     });
   } catch (error) {
-    res.status(500).json({ success: false, message: "Internal server error" });
-    console.log(error);
+    console.error("Error in getVendorBookings:", error);
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+      error: error.message,
+    });
   }
 };
 
-// Update booking status
 const updateBookingStatus = async (req, res) => {
   try {
     const bookingId = req.params.id;
@@ -278,6 +376,7 @@ const updateBookingStatus = async (req, res) => {
         message: "Invalid booking ID format",
       });
     }
+
     // Verify the booking belongs to this vendor
     const booking = await BookingModel.findOne({
       _id: bookingId,
@@ -291,7 +390,28 @@ const updateBookingStatus = async (req, res) => {
       });
     }
 
+    // Validate status transition
+    const validTransitions = {
+      pending: ["confirmed", "cancelled"],
+      confirmed: ["completed", "cancelled"],
+      completed: [],
+      cancelled: [],
+    };
+
+    if (!validTransitions[booking.status].includes(status)) {
+      return res.status(400).json({
+        success: false,
+        message: `Cannot change status from ${booking.status} to ${status}`,
+      });
+    }
+
     booking.status = status;
+
+    // If marking as completed, set completedAt timestamp
+    if (status === "completed") {
+      booking.completedAt = new Date();
+    }
+
     await booking.save();
 
     res.status(200).json({
@@ -300,14 +420,59 @@ const updateBookingStatus = async (req, res) => {
       booking,
     });
   } catch (error) {
-    res.status(500).json({ success: false, message: "Internal server error" });
-    console.log(error);
+    console.error("Error in updateBookingStatus:", error);
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+      error: error.message,
+    });
+  }
+};
+
+// Get booking details
+const getBookingDetails = async (req, res) => {
+  try {
+    const bookingId = req.params.id;
+    const vendorId = req.user._id;
+
+    const booking = await BookingModel.findOne({
+      _id: bookingId,
+      vendor: vendorId,
+    })
+      .populate({
+        path: "service",
+        select: "title image basePrice vendorName",
+      })
+      .populate({
+        path: "user",
+        select: "name email phone",
+      });
+
+    if (!booking) {
+      return res.status(404).json({
+        success: false,
+        message: "Booking not found or you don't have permission to view it",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      booking,
+    });
+  } catch (error) {
+    console.error("Error in getBookingDetails:", error);
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+      error: error.message,
+    });
   }
 };
 
 export {
   addService,
   deleteService,
+  getBookingDetails,
   getVendorBookings,
   getVendorDashboard,
   getVendorServices,

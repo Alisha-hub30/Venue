@@ -6,6 +6,7 @@ import NavBar from '../components/Navbar';
 export default function VendorDashboard() {
   const user = useSelector((state) => state.Auth.user);
   const [services, setServices] = useState([]);
+  const [bookings, setBookings] = useState([]);
   const [newService, setNewService] = useState({
     title: '',
     category: '',
@@ -33,6 +34,7 @@ export default function VendorDashboard() {
   const [isEditing, setIsEditing] = useState(false);
   const [editServiceId, setEditServiceId] = useState(null);
   const [previewImage, setPreviewImage] = useState('');
+  const [activeTab, setActiveTab] = useState('services');
 
   
   const serviceCategories = [
@@ -62,6 +64,61 @@ export default function VendorDashboard() {
     } finally {
       setLoading(false);
     }
+  };
+
+  // Fetch bookings for the vendor
+  const fetchBookings = async () => {
+    try {
+      const res = await axios.get('http://localhost:4000/api/vendor/bookings', { withCredentials: true });
+      setBookings(res.data.bookings || []);
+    } catch (error) {
+      console.error('Failed to fetch vendor bookings:', error);
+      setBookings([]);
+      setMessage('Failed to fetch bookings. Please try again.');
+    }
+  };
+
+  // Update booking status
+  const updateBookingStatus = async (bookingId, status) => {
+    try {
+      const res = await axios.put(
+        `http://localhost:4000/api/vendor/bookings/${bookingId}/status`,
+        { status },
+        { withCredentials: true }
+      );
+      setMessage(res.data.message || 'Booking status updated successfully');
+      fetchBookings(); // Refresh the bookings list
+    } catch (error) {
+      console.error('Failed to update booking status:', error);
+      setMessage(error.response?.data?.message || 'Failed to update booking status');
+    }
+  };
+
+  // Cancel booking
+  const handleCancelBooking = async (bookingId) => {
+    if (window.confirm('Are you sure you want to cancel this booking?')) {
+      await updateBookingStatus(bookingId, 'cancelled');
+    }
+  };
+
+  // Confirm booking
+  const handleConfirmBooking = async (bookingId) => {
+    if (window.confirm('Are you sure you want to confirm this booking?')) {
+      await updateBookingStatus(bookingId, 'confirmed');
+    }
+  };
+
+  // Complete booking
+  const handleCompleteBooking = async (bookingId) => {
+    if (window.confirm('Mark this booking as completed?')) {
+      await updateBookingStatus(bookingId, 'completed');
+    }
+  };
+
+  // Format date for display
+  const formatDate = (dateString) => {
+    const options = { year: 'numeric', month: 'long', day: 'numeric' };
+    return new Date(dateString).toLocaleDateString(undefined, options);
   };
 
   // Validate image URL
@@ -320,6 +377,7 @@ export default function VendorDashboard() {
   useEffect(() => {
     if (user && user.role === 'vendor') {
       fetchServices();
+      fetchBookings();
     } else {
       setLoading(false);
     }
@@ -342,9 +400,30 @@ export default function VendorDashboard() {
       <NavBar/>
       <h1 className="text-2xl font-bold mb-4">Vendor Dashboard</h1>
 
-      {message && <p className={`${message.includes('successfully') ? 'text-green-600' : 'text-red-600'} mb-4`}>{message}</p>}
+      {/* Tab Navigation */}
+      <div className="flex border-b mb-6">
+        <button
+          className={`px-4 py-2 font-medium ${activeTab === 'services' ? 'text-red-600 border-b-2 border-red-600' : 'text-gray-600'}`}
+          onClick={() => setActiveTab('services')}
+        >
+          My Services
+        </button>
+        <button
+          className={`px-4 py-2 font-medium ${activeTab === 'bookings' ? 'text-red-600 border-b-2 border-red-600' : 'text-gray-600'}`}
+          onClick={() => setActiveTab('bookings')}
+        >
+          Bookings ({bookings.length})
+        </button>
+      </div>
 
-      {/* Add New Service Form */}
+      {message && (
+        <div className={`p-3 mb-4 rounded ${message.includes('successfully') ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+          {message}
+        </div>
+      )}
+
+      {activeTab === 'services' ? (
+      <>{/* Add New Service Form */}
       <form onSubmit={isEditing ? handleUpdateService : handleAddServiceSubmit} className="bg-white p-4 rounded shadow mb-8 space-y-4">
         <h2 className="text-xl font-semibold">{isEditing ? 'Edit Service' : 'Add New Service'}</h2>
 
@@ -405,7 +484,7 @@ export default function VendorDashboard() {
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <input type="number" name="basePrice" placeholder="Base Price" value={newService.basePrice} onChange={handleChange} className="w-full border p-2 rounded" required />
-          <select name="priceUnit" value={newService.priceUnit} onChange={handleChange} className="w-full border p-2 rounded">
+          <select name="priceUnit" value={newService.priceUnit} onChange={handleChange} className="w-full border p-2 rounded" required>
             <option value="">Select Price Unit</option>
             <option value="perDay">Per Day</option>
             <option value="perEvent">Per Event</option>
@@ -465,6 +544,61 @@ export default function VendorDashboard() {
             )}
             <p className="text-sm text-gray-500 mt-2">You can add up to 10 items.</p>
           </div>
+        </div>
+        
+        {/*Extra services*/}
+        <div className="border rounded-lg p-4 mb-4">
+          <h3 className="text-lg font-semibold mb-2">Services Offered</h3>
+          
+          {newService.servicesOffered.map((service, index) => (
+            <div key={index} className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-3 p-3 border rounded">
+              <input
+                type="text"
+                placeholder="Service name"
+                value={service.name}
+                onChange={(e) => handleServiceChange(index, 'name', e.target.value)}
+                className="border p-2 rounded"
+                required
+              />
+              <input
+                type="text"
+                placeholder="Description"
+                value={service.description}
+                onChange={(e) => handleServiceChange(index, 'description', e.target.value)}
+                className="border p-2 rounded"
+                required
+              />
+              <div className="flex items-center gap-2">
+                <input
+                  type="number"
+                  placeholder="Price"
+                  value={service.price}
+                  onChange={(e) => handleServiceChange(index, 'price', e.target.value)}
+                  className="border p-2 rounded flex-1"
+                  required
+                />
+                <button
+                  type="button"
+                  onClick={() => {
+                    const updatedServices = [...newService.servicesOffered];
+                    updatedServices.splice(index, 1);
+                    setNewService({...newService, servicesOffered: updatedServices});
+                  }}
+                  className="bg-red-500 text-white p-2 rounded hover:bg-red-600"
+                >
+                  ×
+                </button>
+              </div>
+            </div>
+          ))}
+          
+          <button
+            type="button"
+            onClick={handleAddService}
+            className="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600"
+          >
+            + Add Another Service
+          </button>
         </div>
 
         {/* Detailed Description */}
@@ -580,6 +714,141 @@ export default function VendorDashboard() {
           ))}
         </div>
       )}
+      </>
+      ) : (
+        <div>
+          <h2 className="text-xl font-semibold mb-4">Your Bookings</h2>
+          
+          {bookings.length === 0 ? (
+            <p className="text-center py-4">You don't have any bookings yet.</p>
+          ) : (
+            <div className="space-y-4">
+              {bookings.map((booking) => (
+                <div key={booking._id} className="border p-4 rounded-lg shadow-sm">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                      <h3 className="font-bold text-lg">{booking.service?.title || 'Service'}</h3>
+                      <p className="text-gray-600">
+                        <strong>Customer:</strong> {booking.user?.name || 'N/A'}
+                      </p>
+                      <p className="text-gray-600">
+                        <strong>Email:</strong> {booking.user?.email || booking.email}
+                      </p>
+                      <p className="text-gray-600">
+                        <strong>Phone:</strong> {booking.user?.phone || booking.phone}
+                      </p>
+                    </div>
+                    
+                    <div>
+                      <p className="text-gray-600">
+                        <strong>Booking Date:</strong> {formatDate(booking.createdAt)}
+                      </p>
+                      <p className="text-gray-600">
+                        <strong>Event Date:</strong> {formatDate(booking.bookingDate)}
+                      </p>
+                      <p className="text-gray-600">
+                        <strong>Location:</strong> {booking.location}
+                      </p>
+                      <p className="text-gray-600">
+                        <strong>Status:</strong> 
+                        <span className={`ml-2 font-semibold ${
+                          booking.status === 'confirmed' ? 'text-green-600' :
+                          booking.status === 'cancelled' ? 'text-red-600' :
+                          booking.status === 'completed' ? 'text-blue-600' :
+                          'text-yellow-600'
+                        }`}>
+                          {booking.status.toUpperCase()}
+                        </span>
+                      </p>
+                    </div>
+                    
+                    <div>
+                      <p className="text-gray-600">
+                        <strong>Payment Status:</strong> 
+                        <span className={`ml-2 font-semibold ${
+                          booking.paymentStatus === 'paid' ? 'text-green-600' :
+                          booking.paymentStatus === 'refunded' ? 'text-blue-600' :
+                          'text-yellow-600'
+                        }`}>
+                          {booking.paymentStatus.toUpperCase()}
+                        </span>
+                      </p>
+                      <p className="text-gray-600">
+                        <strong>Total Price:</strong> ₹{booking.totalPrice?.toLocaleString() || 'N/A'}
+                      </p>
+                      {booking.notes && (
+                        <p className="text-gray-600">
+                          <strong>Notes:</strong> {booking.notes}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                  
+                  {/* Selected Services */}
+                  {booking.selectedServices?.length > 0 && (
+                    <div className="mt-4">
+                      <h4 className="font-medium mb-2">Selected Services:</h4>
+                      <ul className="space-y-2">
+                        {booking.selectedServices.map((service, index) => (
+                          <li key={index} className="flex justify-between">
+                            <span>{service.title}</span>
+                            <span>₹{service.basePrice?.toLocaleString()}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                  
+                  {/* Action Buttons */}
+                  <div className="mt-4 flex flex-wrap gap-2">
+                    {booking.status === 'pending' && (
+                      <>
+                        <button
+                          onClick={() => handleConfirmBooking(booking._id)}
+                          className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+                        >
+                          Confirm Booking
+                        </button>
+                        <button
+                          onClick={() => handleCancelBooking(booking._id)}
+                          className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
+                        >
+                          Cancel Booking
+                        </button>
+                      </>
+                    )}
+                    
+                    {booking.status === 'confirmed' && (
+                      <button
+                        onClick={() => handleCompleteBooking(booking._id)}
+                        className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+                      >
+                        Mark as Completed
+                      </button>
+                    )}
+                    
+                    <button
+                      onClick={() => {
+                        // You could implement a contact feature here
+                        const phoneNumber = booking.user?.phone || booking.phone;
+                        if (phoneNumber) {
+                          window.open(`tel:${phoneNumber}`);
+                        } else {
+                          setMessage('No phone number available for this booking');
+                        }
+                      }}
+                      className="bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-700"
+                    >
+                      Contact Customer
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+      
     </div>
   );
 }

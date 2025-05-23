@@ -35,6 +35,56 @@ const bookingSchema = new mongoose.Schema(
       enum: ["pending", "paid", "refunded"],
       default: "pending",
     },
+    // New fields from your form
+    name: {
+      type: String,
+      required: true,
+    },
+    email: {
+      type: String,
+      required: true,
+    },
+    phone: {
+      type: String,
+      required: true,
+    },
+    location: {
+      type: String,
+      required: true,
+    },
+    selectedServices: [
+      {
+        _id: {
+          type: mongoose.Schema.Types.ObjectId,
+          required: true,
+        },
+        title: {
+          type: String,
+          required: true,
+        },
+        basePrice: {
+          type: Number,
+          required: true,
+        },
+        description: String,
+        isMainService: Boolean,
+        extraServiceId: String,
+      },
+    ],
+    totalPrice: {
+      type: Number,
+      required: true,
+    },
+    // Additional fields that might be useful
+    eventType: {
+      type: String,
+    },
+    guestCount: {
+      type: Number,
+    },
+    specialRequests: {
+      type: String,
+    },
   },
   { timestamps: true }
 );
